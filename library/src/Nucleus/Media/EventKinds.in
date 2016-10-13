@@ -1,0 +1,7 @@
+// Copyright (c) 2018 Michael Heilmann
+Define(ApplicationEvent, 0, "application event")
+Define(ComponentEvent, 1, "component event")
+Define(MouseButtonEvent, 2, "mouse button event")
+Define(MousePointerEvent, 3, "mouse pointer event")
+Define(KeyboardKeyEvent, 6, "keyboard Key event")
+Define(WindowEvent, 7, "window event")

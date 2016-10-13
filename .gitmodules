@@ -1,0 +1,8 @@
+[submodule "dependencies/nucleus"]
+	path = dependencies/nucleus
+	url = https://github.com/primordialmachine/nucleus.git
+	branch = master
+[submodule "dependencies/nucleus-object"]
+	path = dependencies/nucleus-object
+	url = https://github.com/primordialmachine/nucleus-object
+	branch = master

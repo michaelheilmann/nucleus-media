@@ -1,0 +1,4 @@
+// Copyright (c) 2018 Michael Heilmann
+Define(Move, 0, "mouse pointer move")
+Define(Enter, 1, "mouse pointer enter")
+Define(Leave, 2, "mouse pointer leave")

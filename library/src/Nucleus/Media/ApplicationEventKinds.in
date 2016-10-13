@@ -1,0 +1,2 @@
+// Copyright (c) 2018 Michael Heilmann
+Define(Closed, 0, "Application Closed") ///< @brief An application closed.

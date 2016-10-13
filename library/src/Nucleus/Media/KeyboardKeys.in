@@ -1,0 +1,138 @@
+// Copyright (c) 2018 Michael Heilmann
+Define(Backspace,1,"Backspace")
+Define(Tabulator,2,"Tabulator")
+Define(Clear,3,"Clear")
+Define(Return,4,"Return")
+Define(CapsLock,6,"Caps Lock")// Capital/"caps lock"
+Define(Escape,8,"Escape")
+
+Define(Shift,9,"Shift")
+Define(LeftShift,10,"Left Shift")
+Define(RightShift,11,"Right Shift")
+
+Define(Control,12,"Control")
+Define(LeftControl,13,"Left Control")
+Define(RightControl,14,"Right Control")
+
+Define(Menu,15,"Menu")
+Define(RightMenu,16,"Right Menu")
+Define(LeftMenu,17,"Left Menu")
+
+Define(A,18,"A")
+Define(B,19,"B")
+Define(C,20,"C")
+Define(D,21,"D")
+Define(E,22,"E")
+Define(F,23,"F")
+Define(G,24,"G")
+Define(H,25,"H")
+Define(I,26,"I")
+Define(J,27,"J")
+Define(K,28,"K")
+Define(L,29,"L")
+Define(M,30,"M")
+Define(N,31,"N")
+Define(O,32,"O")
+Define(P,33,"P")
+Define(Q,34,"Q")
+Define(R,35,"R")
+Define(S,36,"S")
+Define(T,37,"T")
+Define(U,38,"U")
+Define(V,39,"V")
+Define(W,40,"W")
+Define(X,41,"X")
+Define(Y,42,"Y")
+Define(Z,43,"Z")
+
+Define(_0,44,"0")
+Define(_1,45,"1")
+Define(_2,46,"2")
+Define(_3,47,"3")
+Define(_4,48,"4")
+Define(_5,49,"5")
+Define(_6,50,"6")
+Define(_7,51,"7")
+Define(_8,52,"8")
+Define(_9,53,"9")
+
+Define(Up,54,"Up")
+Define(Down,55,"Down")
+Define(Left,56,"Left")
+Define(Right,57,"Right")
+
+Define(Insert,58,"Insert")
+Define(Delete,59,"Delete")
+Define(Home,60,"Home")
+Define(End,61,"End")
+Define(PageUp,62,"Page Up")
+Define(PageDown,63,"Page Down")
+
+Define(Space,64,"Space")
+
+Define(F1,65,"F1")
+Define(F2,66,"F2")
+Define(F3,67,"F3")
+Define(F4,68,"F4")
+Define(F5,69,"F5")
+Define(F6,70,"F6")
+Define(F7,71,"F7")
+Define(F8,72,"F8")
+Define(F9,73,"F9")
+Define(F10,74,"F10")
+Define(F11,75,"F11")
+Define(F12,76,"F12")
+
+Define(F13,77,"F13")
+Define(F14,78,"F14")
+Define(F15,79,"F15")
+Define(F16,80,"F16")
+Define(F17,81,"F17")
+Define(F18,82,"F18")
+Define(F19,83,"F19")
+Define(F20,84,"F20")
+Define(F21,85,"F21")
+Define(F22,86,"F22")
+Define(F23,87,"F23")
+Define(F24,88,"F24")
+
+// NumPad
+Define(NumPad0,89,"NumPad 0")
+Define(NumPad1,90,"NumPad 1")
+Define(NumPad2,91,"NumPad 2")
+Define(NumPad3,92,"NumPad 3")
+Define(NumPad4,93,"NumPad 4")
+Define(NumPad5,94,"NumPad 5")
+Define(NumPad6,95,"NumPad 6")
+Define(NumPad7,96,"NumPad 7")
+Define(NumPad8,97,"NumPad 8")
+Define(NumPad9,98,"NumPad 9")
+Define(NumLock,110,"Num Lock")
+Define(Multiply,99,"Multiply")
+Define(Divide,100,"Divide")
+Define(Add,101,"Add")
+Define(Subtract,102,"Subtract")
+Define(Separator,103,"Separator") // NumPad Enter
+Define(Decimal,104,"Decimal") // Decimal separator on NumPad
+
+Define(LeftWindows,105,"Left Windows")
+Define(RightWindows,106,"Right Windows")
+Define(Applications,107,"Applications")
+Define(Sleep,108,"Compute Sleep")
+
+Define(Print,109,"Print")
+Define(Scroll,111,"Scroll Lock")
+Define(Pause,112,"Pause")
+
+Define(Hangul,113,"IME Hangul mode") // IME Hangul mode: "Hangul" (Korean) writing system.
+Define(Hanja,114,"IME Hanja mode")   // IME Hanja mode: Chinese letters in "Hangul".
+Define(Final,115,"IME Final mode")   // (Seems 2 be related to "Hangul").
+Define(Junja,116,"IME Junja mode")   //    "   " "     "    "     "
+
+Alias(Hangul,Kana)    // IME Kana mode: "Kana" (Japanese) writing system.
+Alias(Hanja,Kanji)    // IME Kanji mode: Chinese letters in "Kana".
+
+Define(Convert,117,"IME Convert")
+Define(NonConvert,118,"IME NonConvert")
+Define(Accept,119,"IME Accept")
+Define(ModeChange,120,"IME Mode Change Request")
