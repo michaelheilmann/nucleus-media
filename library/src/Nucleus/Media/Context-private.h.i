@@ -6,11 +6,11 @@
 #include "Nucleus/Media/OOP/Include.h"
 #include "Nucleus/Media/Plugin.h"
 #include "Nucleus/Collections/PointerHashMap.h"
-#include "Nucleus/Collections/PointerArray.h"
+#include "Nucleus/Object/ObjectArray.h"
 #include "Nucleus/Hash/Memory.h"
 #include "Nucleus/getExecutableDirectoryPathname.h"
-#include "Nucleus/Media/VideoSystem.h"
-#include "Nucleus/Media/AudioSystem.h"
+#include "Nucleus/Media/VideoSystemFactory.h"
+#include "Nucleus/Media/AudioSystemFactory.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -26,12 +26,11 @@
 
 struct Nucleus_MediaContext
 {
-    Nucleus_DynamicLibraryManager *dynamicLibraryManager;
     Nucleus_Collections_PointerHashMap plugins;
     // List of video system factories.
-    Nucleus_Collections_PointerArray videoSystemFactories;
+    Nucleus_ObjectArray *videoSystemFactories;
     // List of audio system factories.
-    Nucleus_Collections_PointerArray audioSystemFactories;
+    Nucleus_ObjectArray *audioSystemFactories;
     // null or selected video system.
     Nucleus_Media_VideoSystem *videoSystem;
     // null or selected audio system.
@@ -44,21 +43,13 @@ static Nucleus_MediaContext *g_singleton = NULL;
 Nucleus_NonNull() static Nucleus_Status
 loadDynamicallyLoadableLibrary
     (
-        Nucleus_DynamicLibraryManager *dynamicLibraryManager,
         const char *dynamicLibraryName
     );
     
 // Private to Nucleus_MediaContext extension to Nucleus_DynamicLibraryManager.
-Nucleus_NonNull() static Nucleus_Status
+static Nucleus_Status
 loadDynamicLoadableLibraries
     (
-        Nucleus_DynamicLibraryManager *dynamicLibraryManager
-    );
-
-Nucleus_NonNull() static Nucleus_Status
-unloadDynamicLoadableLibraries
-    (
-        Nucleus_DynamicLibraryManager *dynamicLibraryManager
     );
 
 // Private to Nucleus_MediaContext extension to Nucleus_PluginManager.
@@ -131,12 +122,6 @@ Nucleus_MediaContext_unregisterPlugins
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
 Nucleus_MediaContext_loadPluginLibraries
-    (
-        Nucleus_MediaContext *mediaContext
-    );
-
-Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_unloadPluginLibraries
     (
         Nucleus_MediaContext *mediaContext
     );

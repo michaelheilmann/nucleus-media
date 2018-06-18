@@ -10,15 +10,15 @@ Nucleus_ClassTypeDeclaration(Nucleus_Media_Library_Export,
 #define NUCLEUS_MEDIA_VIDEOSYSTEM(p) ((Nucleus_Media_VideoSystem *)(p))
 #define NUCLEUS_MEDIA_VIDEOSYSTEM_CLASS(p) ((Nucleus_Media_VideoSystem_Class *)(p))
 
-struct Nucleus_Media_VideoSystem_Class
-{
-    Nucleus_Object_Class parent;
-}; // struct Nucleus_Media_VideoSystem_Class
-
 struct Nucleus_Media_VideoSystem
 {
     Nucleus_Object parent;
 }; // struct Nucleus_Media_VideoSystem
+
+struct Nucleus_Media_VideoSystem_Class
+{
+    Nucleus_Object_Class parent;
+}; // struct Nucleus_Media_VideoSystem_Class
 
 Nucleus_NonNull() Nucleus_Status
 Nucleus_Media_VideoSystem_construct

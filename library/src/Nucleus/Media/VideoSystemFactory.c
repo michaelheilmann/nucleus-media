@@ -5,40 +5,60 @@
 #include "Nucleus/Memory.h"
 
 Nucleus_ClassTypeDefinition(Nucleus_Media_Library_Export,
-                            "Nucleus.VideoSystemFactory",
-                            Nucleus_VideoSystemFactory,
+                            "Nucleus.Media.VideoSystemFactory",
+                            Nucleus_Media_VideoSystemFactory,
                             Nucleus_Object)
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 constructDispatch
     (
-        Nucleus_VideoSystemFactory_Class *dispatch
+        Nucleus_Media_VideoSystemFactory_Class *dispatch
     )
 {
-    dispatch->getName = NULL;
-    dispatch->create = NULL;
+    dispatch->getSystemName = NULL;
+    dispatch->createSystem = NULL;
     return Nucleus_Status_Success;
 }
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
     (
-        Nucleus_VideoSystemFactory *self
+        Nucleus_Media_VideoSystemFactory *self
     )
 { return Nucleus_Status_Success; }
 
 Nucleus_NonNull() Nucleus_Status
-Nucleus_VideoSystemFactory_construct
+Nucleus_Media_VideoSystemFactory_construct
     (
-        Nucleus_VideoSystemFactory *self
+        Nucleus_Media_VideoSystemFactory *self
     )
 {
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
     Nucleus_Type *type;
     Nucleus_Status status;
-    status = Nucleus_VideoSystemFactory_getType(&type);
+    status = Nucleus_Media_VideoSystemFactory_getType(&type);
     if (Nucleus_Unlikely(status)) return status;
     status = Nucleus_Object_construct(NUCLEUS_OBJECT(self));
     NUCLEUS_OBJECT(self)->type = type;
     return Nucleus_Status_Success;
+}
+
+Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_VideoSystemFactory_getSystemName
+    (
+        Nucleus_Media_VideoSystemFactory *self,
+        Nucleus_String **systemName
+    )
+{
+    return NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY_CLASS(NUCLEUS_OBJECT(self)->type->classType.dispatch)->getSystemName(self, systemName);
+}
+
+Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_VideoSystemFactory_createSystem
+    (
+        Nucleus_Media_VideoSystemFactory *self,
+        Nucleus_Media_VideoSystem **system
+    )
+{
+    return NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY_CLASS(NUCLEUS_OBJECT(self)->type->classType.dispatch)->createSystem(self, system);
 }

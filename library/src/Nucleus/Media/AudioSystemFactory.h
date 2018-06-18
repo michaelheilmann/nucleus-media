@@ -4,36 +4,43 @@
 #include "Nucleus/Media/OOP/Include.h"
 
 // Forward declaration.
-typedef struct Nucleus_AudioSystem Nucleus_AudioSystem;
+typedef struct Nucleus_Media_AudioSystem Nucleus_Media_AudioSystem;
 
 Nucleus_ClassTypeDeclaration(Nucleus_Media_Library_Export,
-                             "Nucleus.AudioSystemFactory",
-                             Nucleus_AudioSystemFactory,
+                             "Nucleus.Media.AudioSystemFactory",
+                             Nucleus_Media_AudioSystemFactory,
                              Nucleus_Object)
-#define NUCLEUS_AUDIOSYSTEMFACTORY(p) ((Nucleus_AudioSystemFactory *)(p))
-#define NUCLEUS_AUDIOSYSTEMFACTORY_CLASS(p) ((Nucleus_AudioSystemFactory_Class *)(p))
+#define NUCLEUS_MEDIA_AUDIOSYSTEMFACTORY(p) ((Nucleus_Media_AudioSystemFactory *)(p))
+#define NUCLEUS_MEDIA_AUDIOSYSTEMFACTORY_CLASS(p) ((Nucleus_Media_AudioSystemFactory_Class *)(p))
 
-struct Nucleus_AudioSystemFactory_Class
-{
-    Nucleus_Object_Class parent;
-    Nucleus_Status (*create)(Nucleus_AudioSystemFactory *self, Nucleus_AudioSystem **audioSystem);
-    Nucleus_Status (*getName)(Nucleus_AudioSystemFactory *self, Nucleus_String **name);
-}; // struct Nucleus_AudioSystemFactory_Class
-
-struct Nucleus_AudioSystemFactory
+struct Nucleus_Media_AudioSystemFactory
 {
     Nucleus_Object parent;
-}; // struct Nucleus_AudioSystemFactory
+}; // struct Nucleus_Media_AudioSystemFactory
+
+struct Nucleus_Media_AudioSystemFactory_Class
+{
+    Nucleus_Object_Class parent;
+    Nucleus_Status(*createSystem)(Nucleus_Media_AudioSystemFactory *self, Nucleus_Media_AudioSystem **system);
+    Nucleus_Status(*getSystemName)(Nucleus_Media_AudioSystemFactory *self, Nucleus_String **systemName);
+}; // struct Nucleus_Media_AudioSystemFactory_Class
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_AudioSystemFactory_construct
+Nucleus_Media_AudioSystemFactory_construct
     (
-        Nucleus_AudioSystemFactory *self
+        Nucleus_Media_AudioSystemFactory *self
     );
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_AudioSystemFactory_getName
+Nucleus_Media_AudioSystemFactory_getSystemName
     (
-        Nucleus_AudioSystemFactory *self,
-        Nucleus_String **name
+        Nucleus_Media_AudioSystemFactory *self,
+        Nucleus_String **systemName
+    );
+
+Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_AudioSystemFactory_createSystem
+    (
+        Nucleus_Media_AudioSystemFactory *self,
+        Nucleus_Media_AudioSystem **system
     );

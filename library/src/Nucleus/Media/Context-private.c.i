@@ -4,7 +4,6 @@
 Nucleus_NonNull() static Nucleus_Status
 loadDynamicallyLoadableLibrary
     (
-        Nucleus_DynamicLibraryManager *dynamicLibraryManager,
         const char *dynamicLibraryFilename
     )
 {
@@ -42,9 +41,8 @@ loadDynamicallyLoadableLibrary
     Nucleus_deallocateMemory(dynamicLibrarySearchPathPathname);
     
     // Load the DLL.
-    status = Nucleus_DynamicLibraryManager_load(dynamicLibraryManager,
-                                                dynamicLibraryPathname,
-                                                &dynamicLibrary);
+    status = Nucleus_Types_loadDynamicLibrary(dynamicLibraryPathname,
+                                              &dynamicLibrary);
     if (Nucleus_Unlikely(status))
     {
         fprintf(stderr, u8"%s: %d: unable to load dynamically loadable library '%s'\n", __FILE__, __LINE__,
@@ -53,44 +51,40 @@ loadDynamicallyLoadableLibrary
         return status;
     }
     Nucleus_deallocateMemory(dynamicLibraryPathname);
-    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(dynamicLibrary));
+    Nucleus_DynamicLibrary_unlock(dynamicLibrary);
     return Nucleus_Status_Success;
 }
 
-Nucleus_NonNull() static Nucleus_Status
+static Nucleus_Status
 loadDynamicLoadableLibraries
     (
-        Nucleus_DynamicLibraryManager *dynamicLibraryManager
     )
 {
     Nucleus_Status status;
 #if (Nucleus_OperatingSystem == Nucleus_OperatingSystem_WINDOWS)
     //
-    status = loadDynamicallyLoadableLibrary(dynamicLibraryManager, u8"Nucleus.Media.Plugin.OpenGL");
+    status = loadDynamicallyLoadableLibrary(u8"Nucleus.Media.Plugin.OpenGL");
     if (status) { return status; }
     //
-    status = loadDynamicallyLoadableLibrary(dynamicLibraryManager, u8"Nucleus.Media.Plugin.Direct3D");
+    status = loadDynamicallyLoadableLibrary(u8"Nucleus.Media.Plugin.Direct3D");
+    if (status) { return status; }
+    //
+    status = loadDynamicallyLoadableLibrary(u8"Nucleus.Media.Plugin.XAudio2");
     if (status) { return status; }
 #elif (Nucleus_OperatingSystem == Nucleus_OperatingSystem_LINUX)  || \
       (Nucleus_OperatingSystem == Nucleus_OperatingSystem_CYGWIN) || \
       (Nucleus_OperatingSystem == Nucleus_OperatingSystem_MACOS)
     //
-    status = loadDynamicallyLoadableLibrary(dynamicLibraryManager, u8"Nucleus.Media.Plugin.OpenGL");
+    status = loadDynamicallyLoadableLibrary(u8"Nucleus.Media.Plugin.OpenGL");
+    if (status) { return status; }
+    //
+    status = loadDynamicallyLoadableLibrary(u8"Nucleus.Media.Plugin.OpenAL");
     if (status) { return status; }
 #else
     //
     #error("environment not supported")
 #endif
     return Nucleus_Status_Success;
-}
-
-Nucleus_NonNull() static Nucleus_Status
-unloadDynamicLoadableLibraries
-    (
-        Nucleus_DynamicLibraryManager *dynamicLibraryManager
-    )
-{
-    return Nucleus_DynamicLibraryManager_unloadAll(dynamicLibraryManager);
 }
 
 Nucleus_NonNull() static Nucleus_Status
@@ -107,7 +101,7 @@ initialize
     //
     Nucleus_Status status;
     //
-    status = Nucleus_TypeSystem_startup();
+    status = Nucleus_Types_initialize();
     if (Nucleus_Unlikely(status))
     {
         return status; 
@@ -116,53 +110,36 @@ initialize
     mediaContext->videoSystem = NULL;
     mediaContext->audioSystem = NULL;
     //
-    status = Nucleus_DynamicLibraryManager_create(&mediaContext->dynamicLibraryManager);
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_TypeSystem_shutdown();
-        return status;
-    }
     //
     status = Nucleus_Collections_PointerHashMap_initialize(&mediaContext->plugins,
                                                            0,
                                                            NUCLEUS_LOCKFUNCTION(&Nucleus_Object_incrementReferenceCount),
                                                            NUCLEUS_UNLOCKFUNCTION(&Nucleus_Object_decrementReferenceCount),
-                                                           NUCLEUS_HASHFUNCTION(&Nucleus_String_hash),
-                                                           NUCLEUS_EQUALTOFUNCTION(&Nucleus_String_equalTo),
+                                                           NUCLEUS_HASHFUNCTION(&Nucleus_Object_hash),
+                                                           NUCLEUS_EQUALTOFUNCTION(&Nucleus_Object_equalTo),
                                                            NUCLEUS_LOCKFUNCTION(&Nucleus_Object_incrementReferenceCount),
                                                            NUCLEUS_UNLOCKFUNCTION(&Nucleus_Object_decrementReferenceCount));
     if (Nucleus_Unlikely(status))
     {
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->dynamicLibraryManager));
-        mediaContext->dynamicLibraryManager = NULL;
-        Nucleus_TypeSystem_shutdown();
+        Nucleus_Types_uninitialize();
         return status;
     }
     //
-    status = Nucleus_Collections_PointerArray_initialize(&mediaContext->videoSystemFactories,
-                                                           0,
-                                                           NUCLEUS_LOCKFUNCTION(&Nucleus_Object_incrementReferenceCount),
-                                                           NUCLEUS_UNLOCKFUNCTION(&Nucleus_Object_decrementReferenceCount));
+    status = Nucleus_ObjectArray_create(&mediaContext->videoSystemFactories);
     if (Nucleus_Unlikely(status))
     {
         Nucleus_Collections_PointerHashMap_uninitialize(&mediaContext->plugins);
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->dynamicLibraryManager));
-        mediaContext->dynamicLibraryManager = NULL;
-        Nucleus_TypeSystem_shutdown();
+        Nucleus_Types_uninitialize();
         return status;
     }
     //
-    status = Nucleus_Collections_PointerArray_initialize(&mediaContext->audioSystemFactories,
-                                                         0,
-                                                         NUCLEUS_LOCKFUNCTION(&Nucleus_Object_incrementReferenceCount),
-                                                         NUCLEUS_UNLOCKFUNCTION(&Nucleus_Object_decrementReferenceCount));
+    status = Nucleus_ObjectArray_create(&mediaContext->audioSystemFactories);
     if (Nucleus_Unlikely(status))
     {
-        Nucleus_Collections_PointerArray_uninitialize(&mediaContext->videoSystemFactories);
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->videoSystemFactories));
+        mediaContext->videoSystemFactories = NULL;
         Nucleus_Collections_PointerHashMap_uninitialize(&mediaContext->plugins);
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->dynamicLibraryManager));
-        mediaContext->dynamicLibraryManager = NULL;
-        Nucleus_TypeSystem_shutdown();
+        Nucleus_Types_uninitialize();
         return status;
     }
     return Nucleus_Status_Success;
@@ -186,15 +163,14 @@ uninitialize
         mediaContext->audioSystem = NULL;
     }
     //
-    Nucleus_Collections_PointerArray_uninitialize(&mediaContext->audioSystemFactories);
-    Nucleus_Collections_PointerArray_uninitialize(&mediaContext->videoSystemFactories);
+    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->audioSystemFactories));
+    mediaContext->audioSystemFactories = NULL;
+    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->videoSystemFactories));
+    mediaContext->videoSystemFactories = NULL;
     //
     Nucleus_Collections_PointerHashMap_uninitialize(&mediaContext->plugins);
     //
-    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->dynamicLibraryManager));
-    mediaContext->dynamicLibraryManager = NULL;
-    //
-    Nucleus_TypeSystem_shutdown();
+    Nucleus_Types_uninitialize();
     //
     return Nucleus_Status_Success;
 }
@@ -242,22 +218,8 @@ Nucleus_MediaContext_loadPluginLibraries
     if (Nucleus_Unlikely(!mediaContext)) return Nucleus_Status_InvalidArgument;
     //
     Nucleus_Status status;
-    status = loadDynamicLoadableLibraries(mediaContext->dynamicLibraryManager);
+    status = loadDynamicLoadableLibraries();
     if (Nucleus_Unlikely(status)) return status;
-    //
-    return Nucleus_Status_Success;
-}
-
-Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_unloadPluginLibraries
-    (
-        Nucleus_MediaContext *mediaContext
-    )
-{
-    //
-    if (Nucleus_Unlikely(!mediaContext)) return Nucleus_Status_InvalidArgument;
-    //
-    unloadDynamicLoadableLibraries(mediaContext->dynamicLibraryManager);
     //
     return Nucleus_Status_Success;
 }
@@ -270,29 +232,26 @@ Nucleus_MediaContext_registerPlugins
 {
     Nucleus_Status status;
     Nucleus_Size i, n;
-    status = Nucleus_DynamicLibraryManager_getSize(mediaContext->dynamicLibraryManager, &n);
+    status = Nucleus_Types_getNumberOfDynamicLibraries(&n);
     if (Nucleus_Unlikely(status)) return status;
     for (i = 0; i < n; ++i)
     {
         Nucleus_DynamicLibrary *dynamicLibrary;
-        status = Nucleus_DynamicLibraryManager_at(mediaContext->dynamicLibraryManager, i, &dynamicLibrary);
+        status = Nucleus_Types_getDynamicLibrary(i, &dynamicLibrary);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_MediaContext_unregisterPlugins(mediaContext);
             return status;
         }
         void *createPlugin;
         status = Nucleus_DynamicLibrary_getSymbol(dynamicLibrary, u8"createPlugin", &createPlugin);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_MediaContext_unregisterPlugins(mediaContext);
             return status;
         }
         Nucleus_Media_Plugin *plugin;
         status = (*((Nucleus_Status (*)(Nucleus_Media_Plugin **))createPlugin))(&plugin);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_MediaContext_unregisterPlugins(mediaContext);
             return status;
         }
         //
@@ -301,7 +260,6 @@ Nucleus_MediaContext_registerPlugins
         if (Nucleus_Unlikely(status))
         {
             Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(plugin));
-            Nucleus_MediaContext_unregisterPlugins(mediaContext);
             return status;
         }
         status = Nucleus_Collections_PointerHashMap_set(&mediaContext->plugins,
@@ -322,7 +280,6 @@ Nucleus_MediaContext_registerPlugins
             {
                 Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(pluginName));
                 Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(plugin));
-                Nucleus_MediaContext_unregisterPlugins(mediaContext);
                 return status;          
             }
         }
@@ -455,8 +412,8 @@ Nucleus_MediaContext_unregisterFactories
         Nucleus_MediaContext *mediaContext
     )
 {
-    Nucleus_Collections_PointerArray_clear(&mediaContext->audioSystemFactories);
-    Nucleus_Collections_PointerArray_clear(&mediaContext->videoSystemFactories);
+    Nucleus_ObjectArray_clear(mediaContext->audioSystemFactories);
+    Nucleus_ObjectArray_clear(mediaContext->videoSystemFactories);
     return Nucleus_Status_Success;
 }
 

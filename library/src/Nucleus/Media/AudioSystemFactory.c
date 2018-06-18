@@ -5,41 +5,61 @@
 #include "Nucleus/Memory.h"
 
 Nucleus_ClassTypeDefinition(Nucleus_Media_Library_Export,
-                            "Nucleus.AudioSystemFactory",
-                            Nucleus_AudioSystemFactory,
+                            "Nucleus.Media.AudioSystemFactory",
+                            Nucleus_Media_AudioSystemFactory,
                             Nucleus_Object)
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 constructDispatch
     (
-        Nucleus_AudioSystemFactory_Class *dispatch
+        Nucleus_Media_AudioSystemFactory_Class *dispatch
     )
 {
-    dispatch->getName = NULL;
-    dispatch->create = NULL;
+    dispatch->getSystemName = NULL;
+    dispatch->createSystem = NULL;
     return Nucleus_Status_Success;
 }
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
     (
-        Nucleus_AudioSystemFactory *self
+        Nucleus_Media_AudioSystemFactory *self
     )
 { return Nucleus_Status_Success; }
 
 Nucleus_NonNull() Nucleus_Status
-Nucleus_AudioSystemFactory_construct
+Nucleus_Media_AudioSystemFactory_construct
     (
-        Nucleus_AudioSystemFactory *self
+        Nucleus_Media_AudioSystemFactory *self
     )
 {
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
     Nucleus_Type *type;
     Nucleus_Status status;
-    status = Nucleus_AudioSystemFactory_getType(&type);
+    status = Nucleus_Media_AudioSystemFactory_getType(&type);
     if (Nucleus_Unlikely(status)) return status;
     status = Nucleus_Object_construct(NUCLEUS_OBJECT(self));
     if (Nucleus_Unlikely(status)) return status;
     NUCLEUS_OBJECT(self)->type = type;
     return Nucleus_Status_Success;
+}
+
+Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_AudioSystemFactory_getSystemName
+    (
+        Nucleus_Media_AudioSystemFactory *self,
+        Nucleus_String **systemName
+    )
+{
+    return NUCLEUS_MEDIA_AUDIOSYSTEMFACTORY_CLASS(NUCLEUS_OBJECT(self)->type->classType.dispatch)->getSystemName(self, systemName);
+}
+
+Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_AudioSystemFactory_createSystem
+    (
+        Nucleus_Media_AudioSystemFactory *self,
+        Nucleus_Media_AudioSystem **system
+    )
+{
+    return NUCLEUS_MEDIA_AUDIOSYSTEMFACTORY_CLASS(NUCLEUS_OBJECT(self)->type->classType.dispatch)->createSystem(self, system);
 }

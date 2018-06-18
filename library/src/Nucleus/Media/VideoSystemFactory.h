@@ -4,37 +4,43 @@
 #include "Nucleus/Media/OOP/Include.h"
 
 // Forward declaration.
-typedef struct Nucleus_VideoSystem Nucleus_VideoSystem;
+typedef struct Nucleus_Media_VideoSystem Nucleus_Media_VideoSystem;
 
 Nucleus_ClassTypeDeclaration(Nucleus_Media_Library_Export,
-                             "Nucleus.VideoSystemFactory",
-                             Nucleus_VideoSystemFactory,
+                             "Nucleus.Media.VideoSystemFactory",
+                             Nucleus_Media_VideoSystemFactory,
                              Nucleus_Object)
-#define NUCLEUS_VIDEOSYSTEMFACTORY(p) ((Nucleus_VideoSystemFactory *)(p))
-#define NUCLEUS_VIDEOSYSTEMFACTORY_CLASS(p) ((Nucleus_VideoSystemFactory_Class *)(p))
+#define NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY(p) ((Nucleus_Media_VideoSystemFactory *)(p))
+#define NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY_CLASS(p) ((Nucleus_Media_VideoSystemFactory_Class *)(p))
 
-struct Nucleus_VideoSystemFactory_Class
-{
-    Nucleus_Object_Class parent;
-    Nucleus_Status (*create)(Nucleus_VideoSystemFactory *self, Nucleus_VideoSystem **videoSystem);
-    Nucleus_Status (*getName)(Nucleus_VideoSystemFactory *self, Nucleus_String **name);
-}; // struct Nucleus_VideoSystemFactory_Class
-
-struct Nucleus_VideoSystemFactory
+struct Nucleus_Media_VideoSystemFactory
 {
     Nucleus_Object parent;
-    Nucleus_String *name;
-}; // struct Nucleus_VideoSystemFactory
+}; // struct Nucleus_Media_VideoSystemFactory
+
+struct Nucleus_Media_VideoSystemFactory_Class
+{
+    Nucleus_Object_Class parent;
+    Nucleus_Status (*createSystem)(Nucleus_Media_VideoSystemFactory *self, Nucleus_Media_VideoSystem **system);
+    Nucleus_Status (*getSystemName)(Nucleus_Media_VideoSystemFactory *self, Nucleus_String **systemName);
+}; // struct Nucleus_Media_VideoSystemFactory_Class
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_VideoSystemFactory_construct
+Nucleus_Media_VideoSystemFactory_construct
     (
-        Nucleus_VideoSystemFactory *self
+        Nucleus_Media_VideoSystemFactory *self
     );
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_VideoSystemFactory_getName
+Nucleus_Media_VideoSystemFactory_getSystemName
     (
-        Nucleus_VideoSystemFactory *self,
-        Nucleus_String **name
+        Nucleus_Media_VideoSystemFactory *self,
+        Nucleus_String **systemName
+    );
+
+Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_VideoSystemFactory_createSystem
+    (
+        Nucleus_Media_VideoSystemFactory *self,
+        Nucleus_Media_VideoSystem **system
     );

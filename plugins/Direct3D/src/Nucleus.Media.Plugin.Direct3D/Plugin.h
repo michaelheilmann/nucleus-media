@@ -12,16 +12,16 @@ Nucleus_ClassTypeDeclaration(Nucleus_Media_Plugin_Direct3D_Export,
 #define NUCLEUS_MEDIA_PLUGIN_DIRECT3D_PLUGIN(p) ((Nucleus_Media_Plugin_Direct3D_Plugin *)(p))
 #define NUCLEUS_MEDIA_PLUGIN_DIRECT3D_PLUGIN_CLASS(p) ((Nucleus_Media_Plugin_Direct3D_Plugin_Class *)(p))
 
-struct Nucleus_Media_Plugin_Direct3D_Plugin_Class
-{
-    Nucleus_Media_Plugin_Class parent;
-}; // struct Nucleus_Media_Plugin_Direct3D_Plugin_Class
-
 struct Nucleus_Media_Plugin_Direct3D_Plugin
 {
     Nucleus_Media_Plugin parent;
     Nucleus_String *name;
 }; // struct Nucleus_Media_Plugin_Direct3D_Plugin
+
+struct Nucleus_Media_Plugin_Direct3D_Plugin_Class
+{
+    Nucleus_Media_Plugin_Class parent;
+}; // struct Nucleus_Media_Plugin_Direct3D_Plugin_Class
 
 Nucleus_NonNull() Nucleus_Status
 Nucleus_Media_Plugin_Direct3D_Plugin_construct

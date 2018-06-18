@@ -1,7 +1,7 @@
 // Copyright (c) 2018 Michael Heilmann
-#include "Nucleus/Media/Plugin/OpenGL/Plugin.h"
+#include "Nucleus.Media.Plugin.OpenGL/Plugin.h"
 #include "Nucleus/Media/Context.h"
-#include "Nucleus/Media/Plugin/OpenGL/VideoSystemFactory.h"
+#include "Nucleus.Media.Plugin.OpenGL/VideoSystemFactory.h"
 
 Nucleus_ClassTypeDefinition(Nucleus_Media_Plugin_OpenGL_Export,
                             "Nucleus.Media.Plugin.OpenGL.Plugin",
@@ -44,7 +44,7 @@ startup
     status = Nucleus_Media_Plugin_OpenGL_VideoSystemFactory_create(&factory);
     if (Nucleus_Unlikely(status)) return status;
     //
-    status = Nucleus_MediaContext_registerVideoSystemFactory(context, NUCLEUS_VIDEOSYSTEMFACTORY(factory));
+    status = Nucleus_MediaContext_registerVideoSystemFactory(context, NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY(factory));
     Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
     if (Nucleus_Unlikely(status))
     {

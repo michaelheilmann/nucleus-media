@@ -1,27 +1,24 @@
 // Copyright (c) 2018 Michael Heilmann
-#include "VideoSystemFactory.h"
-
-#include "Nucleus/Media/Context.h"
-#include "Nucleus/Memory.h"
+#include "Nucleus.Media.Plugin.Direct3D/VideoSystemFactory.h"
+#include "Nucleus.Media.Plugin.Direct3D/VideoSystem.h"
 
 Nucleus_ClassTypeDefinition(Nucleus_Media_Plugin_Direct3D_Export,
-                 "Nucleus.Media.Plugin.Direct3D.VideoSystemFactory",
-                 Nucleus_Media_Plugin_Direct3D_VideoSystemFactory,
-                 Nucleus_VideoSystemFactory)
-
+                            "Nucleus.Media.Plugin.Direct3D.VideoSystemFactory",
+                            Nucleus_Media_Plugin_Direct3D_VideoSystemFactory,
+                            Nucleus_Media_VideoSystemFactory)
 
 Nucleus_NonNull() static Nucleus_Status
-getName
+getSystemName
     (
-        Nucleus_VideoSystemFactory *self,
-        Nucleus_String **name
+        Nucleus_Media_Plugin_Direct3D_VideoSystemFactory *self,
+        Nucleus_String **systemName
     );
 
 Nucleus_NonNull() static Nucleus_Status
-create
+createSystem
     (
-        Nucleus_VideoSystemFactory *self,
-        Nucleus_VideoSystem **videoSystem
+        Nucleus_Media_Plugin_Direct3D_VideoSystemFactory *self,
+        Nucleus_Media_VideoSystem **system
     );
     
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
@@ -30,8 +27,8 @@ constructDispatch
         Nucleus_Media_Plugin_Direct3D_VideoSystemFactory_Class *dispatch
     )
 {
-    NUCLEUS_VIDEOSYSTEMFACTORY_CLASS(dispatch)->create = &create;
-    NUCLEUS_VIDEOSYSTEMFACTORY_CLASS(dispatch)->getName = NULL;
+    NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY_CLASS(dispatch)->createSystem = (Nucleus_Status(*)(Nucleus_Media_VideoSystemFactory *, Nucleus_Media_VideoSystem **))&createSystem;
+    NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY_CLASS(dispatch)->getSystemName = (Nucleus_Status(*)(Nucleus_Media_VideoSystemFactory *, Nucleus_String **))&getSystemName;
     return Nucleus_Status_Success;
 }
 
@@ -41,33 +38,33 @@ destruct
         Nucleus_Media_Plugin_Direct3D_VideoSystemFactory *self
     )
 {
-    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(self->name));
-    self->name = NULL;
+    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(self->systemName));
+    self->systemName = NULL;
     return Nucleus_Status_Success;
 }
 
 Nucleus_NonNull() static Nucleus_Status
-getName
+getSystemName
     (
-        Nucleus_VideoSystemFactory *self,
-        Nucleus_String **name
+        Nucleus_Media_Plugin_Direct3D_VideoSystemFactory *self,
+        Nucleus_String **systemName
     )
 {
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
-    Nucleus_Object_incrementReferenceCount(NUCLEUS_OBJECT(self->name));
-    *name = self->name;
+    Nucleus_Object_incrementReferenceCount(NUCLEUS_OBJECT(self->systemName));
+    *systemName = self->systemName;
     return Nucleus_Status_Success;
 }
 
 Nucleus_NonNull() static Nucleus_Status
-create
+createSystem
     (
-        Nucleus_VideoSystemFactory *self,
-        Nucleus_VideoSystem **videoSystem
+        Nucleus_Media_Plugin_Direct3D_VideoSystemFactory *self,
+        Nucleus_Media_VideoSystem **system
     )
 {
-    if (Nucleus_Unlikely(!self || !videoSystem)) return Nucleus_Status_InvalidArgument;
-    return Nucleus_Status_Success;
+    if (Nucleus_Unlikely(!self || !system)) return Nucleus_Status_InvalidArgument;
+    return Nucleus_Media_Plugin_Direct3D_VideoSystem_create((Nucleus_Media_Plugin_Direct3D_VideoSystem **)system);
 }
 
 Nucleus_NonNull() Nucleus_Status
@@ -81,9 +78,9 @@ Nucleus_Media_Plugin_Direct3D_VideoSystemFactory_construct
     Nucleus_Status status;
     status = Nucleus_Media_Plugin_Direct3D_VideoSystemFactory_getType(&type);
     if (Nucleus_Unlikely(status)) return status;
-    status = Nucleus_VideoSystemFactory_construct(NUCLEUS_VIDEOSYSTEMFACTORY(self));
+    status = Nucleus_Media_VideoSystemFactory_construct(NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY(self));
     if (Nucleus_Unlikely(status)) return status;
-    status = Nucleus_String_create(&self->name, u8"Direct3D Renderer");
+    status = Nucleus_String_create(&self->systemName, u8"Direct3D Video System");
     if (Nucleus_Unlikely(status)) return status;
     NUCLEUS_OBJECT(self)->type = type;
     return Nucleus_Status_Success;

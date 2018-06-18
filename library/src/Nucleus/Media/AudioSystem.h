@@ -10,15 +10,15 @@ Nucleus_ClassTypeDeclaration(Nucleus_Media_Library_Export,
 #define NUCLEUS_MEDIA_AUDIOSYSTEM(p) ((Nucleus_Media_AudioSystem *)(p))
 #define NUCLEUS_MEDIA_AUDIOSYSTEM_CLASS(p) ((Nucleus_Media_AudioSystem_Class *)(p))
 
-struct Nucleus_Media_AudioSystem_Class
-{
-    Nucleus_Object_Class parent;
-}; // struct Nucleus_Media_AudioSystem_Class
-
 struct Nucleus_Media_AudioSystem
 {
     Nucleus_Object parent;
 }; // struct Nucleus_Media_AudioSystem
+
+struct Nucleus_Media_AudioSystem_Class
+{
+    Nucleus_Object_Class parent;
+}; // struct Nucleus_Media_AudioSystem_Class
 
 Nucleus_NonNull() Nucleus_Status
 Nucleus_Media_AudioSystem_construct

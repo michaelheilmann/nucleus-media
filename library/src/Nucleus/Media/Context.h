@@ -5,10 +5,11 @@
 #include "Nucleus/Status.h"
 #include "Nucleus/Types/Size.h"
 #include "Nucleus/Media/Exports.h"
+#include "Nucleus/Media//OOP/Include.h"
 
 // Forward declarations.
-typedef struct Nucleus_AudioSystemFactory Nucleus_AudioSystemFactory;
-typedef struct Nucleus_VideoSystemFactory Nucleus_VideoSystemFactory;
+typedef struct Nucleus_Media_AudioSystemFactory Nucleus_Media_AudioSystemFactory;
+typedef struct Nucleus_Media_VideoSystemFactory Nucleus_Media_VideoSystemFactory;
 
 // `Nucleus_MediaContext` is a representation of a heavy-weight collection of resources pertaining
 // to audio, video, and haptic functionality.
@@ -79,7 +80,14 @@ Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
 Nucleus_MediaContext_registerAudioSystemFactory
     (
         Nucleus_MediaContext *mediaContext,
-        Nucleus_AudioSystemFactory *audioSystemFactory
+        Nucleus_Media_AudioSystemFactory *audioSystemFactory
+    );
+
+Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
+Nucleus_MediaContext_getAudioSystemFactories
+    (
+        Nucleus_MediaContext *mediaContext,
+        Nucleus_ObjectEnumerator **enumerator
     );
 
 // Register a video system factory.
@@ -88,15 +96,22 @@ Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
 Nucleus_MediaContext_registerVideoSystemFactory
     (
         Nucleus_MediaContext *mediaContext,
-        Nucleus_VideoSystemFactory *videoSystemFactory
+        Nucleus_Media_VideoSystemFactory *videoSystemFactory
     );
 
-Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
+Nucleus_MediaContext_getVideoSystemFactories
+    (
+        Nucleus_MediaContext *mediaContext,
+        Nucleus_ObjectEnumerator **enumerator  
+    );
+
+Nucleus_NonNull(1) Nucleus_Status
 Nucleus_MediaContext_startup
     (
         Nucleus_MediaContext *context,
-        Nucleus_Status(*selectVideoSystemFactory)(Nucleus_VideoSystemFactory **factory),
-        Nucleus_Status(*selectAudioSystemFactory)(Nucleus_AudioSystemFactory **factory)
+        Nucleus_Status(*selectVideoSystemFactory)(Nucleus_Media_VideoSystemFactory **factory),
+        Nucleus_Status(*selectAudioSystemFactory)(Nucleus_Media_AudioSystemFactory **factory)
     );
 
 Nucleus_NonNull() Nucleus_Status
