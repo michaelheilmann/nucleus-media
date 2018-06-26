@@ -4,14 +4,6 @@ Nucleus_ClassTypeDefinition(Nucleus_Media_Library_Export,
                             "Nucleus.Media.Plugin",
                             Nucleus_Media_Plugin,
                             Nucleus_Object)
-Nucleus_NonNull() static Nucleus_Media_Plugin_Class *
-GETCLASS
-    (
-        Nucleus_Media_Plugin *self
-    )
-{
-    return (Nucleus_Media_Plugin_Class *)(((Nucleus_Object *)(self))->type->classType.dispatch);
-}
 
 Nucleus_NonNull() static Nucleus_Status
 equalTo
@@ -62,6 +54,13 @@ constructDispatch
     return Nucleus_Status_Success;
 }
 
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
+    (
+        Nucleus_Media_Plugin_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
+
 Nucleus_NonNull() Nucleus_Status
 Nucleus_Media_Plugin_construct
     (
@@ -87,7 +86,7 @@ Nucleus_Media_Plugin_getName
     )
 {
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
-    return GETCLASS(self)->getName(self, name);
+    return getDispatch(self)->getName(self, name);
 }
 
 Nucleus_NonNull() Nucleus_Status
@@ -97,7 +96,7 @@ Nucleus_Media_Plugin_startup
     )
 {
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
-    return GETCLASS(self)->startup(self);
+    return getDispatch(self)->startup(self);
 }
 
 Nucleus_NonNull() Nucleus_Status
@@ -107,5 +106,5 @@ Nucleus_Media_Plugin_shutdown
     )
 {
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
-    return GETCLASS(self)->shutdown(self);
+    return getDispatch(self)->shutdown(self);
 }

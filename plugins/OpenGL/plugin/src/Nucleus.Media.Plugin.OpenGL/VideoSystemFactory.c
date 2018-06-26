@@ -33,6 +33,13 @@ constructDispatch
 }
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
+    (
+        Nucleus_Media_Plugin_OpenGL_VideoSystemFactory_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
+
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
     (
         Nucleus_Media_Plugin_OpenGL_VideoSystemFactory *self
@@ -82,29 +89,4 @@ Nucleus_Media_Plugin_OpenGL_VideoSystemFactory_construct
     return Nucleus_Status_Success;
 }
 
-Nucleus_NonNull() Nucleus_Status
-Nucleus_Media_Plugin_OpenGL_VideoSystemFactory_create
-    (
-        Nucleus_Media_Plugin_OpenGL_VideoSystemFactory **videoSystemFactory
-    )
-{
-    // validate arguments
-    if (Nucleus_Unlikely(!videoSystemFactory)) return Nucleus_Status_InvalidArgument;
-    Nucleus_Status status;
-    Nucleus_Media_Plugin_OpenGL_VideoSystemFactory *temporary;
-    // allocate
-    status = Nucleus_Object_allocate((Nucleus_Object **)&temporary,
-                                     sizeof(Nucleus_Media_Plugin_OpenGL_VideoSystemFactory));
-    if (Nucleus_Unlikely(status)) return status;
-    // construct
-    status = Nucleus_Media_Plugin_OpenGL_VideoSystemFactory_construct(temporary);
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(temporary));
-        return status;
-    }
-    // assign result
-    *videoSystemFactory = temporary;
-    // return with success
-    return Nucleus_Status_Success;
-}
+Nucleus_DefineDefaultCreate(Nucleus_Media_Plugin_OpenGL_VideoSystemFactory)

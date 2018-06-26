@@ -14,6 +14,13 @@ constructDispatch
 { return Nucleus_Status_Success; }
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
+    (
+        Nucleus_Media_Plugin_OpenAL_AudioSystem_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
+
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
     (
         Nucleus_Media_Plugin_OpenAL_AudioSystem *self
@@ -39,29 +46,4 @@ Nucleus_Media_Plugin_OpenAL_AudioSystem_construct
     return Nucleus_Status_Success;
 }
 
-Nucleus_NonNull() Nucleus_Status
-Nucleus_Media_Plugin_OpenAL_AudioSystem_create
-    (
-        Nucleus_Media_Plugin_OpenAL_AudioSystem **audioSystem
-    )
-{
-    // validate arguments
-    if (Nucleus_Unlikely(!audioSystem)) return Nucleus_Status_InvalidArgument;
-    Nucleus_Status status;
-    Nucleus_Media_Plugin_OpenAL_AudioSystem *temporary;
-    // allocate
-    status = Nucleus_Object_allocate((Nucleus_Object **)&temporary,
-                                     sizeof(Nucleus_Media_Plugin_OpenAL_AudioSystem));
-    if (Nucleus_Unlikely(status)) return status;
-    // construct
-    status = Nucleus_Media_Plugin_OpenAL_AudioSystem_construct(temporary);
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(temporary));
-        return status;
-    }
-    // assign result
-    *audioSystem = temporary;
-    // return with success
-    return Nucleus_Status_Success;
-}
+Nucleus_DefineDefaultCreate(Nucleus_Media_Plugin_OpenAL_AudioSystem)

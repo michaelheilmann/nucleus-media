@@ -89,6 +89,13 @@ constructDispatch
 }
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
+    (
+        Nucleus_Media_Plugin_OpenGL_Plugin_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
+
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
     (
         Nucleus_Media_Plugin_OpenGL_Plugin *self
@@ -106,38 +113,22 @@ Nucleus_Media_Plugin_OpenGL_Plugin_construct
     )
 {
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
-    Nucleus_Type *type;
+    //
+	Nucleus_Type *type;
     Nucleus_Status status;
+	//
     status = Nucleus_Media_Plugin_OpenGL_Plugin_getType(&type);
     if (Nucleus_Unlikely(status)) return status;
-    status = Nucleus_Media_Plugin_construct(NUCLEUS_MEDIA_PLUGIN(self));
+    //
+	status = Nucleus_Media_Plugin_construct(NUCLEUS_MEDIA_PLUGIN(self));
     if (Nucleus_Unlikely(status)) return status;
     //
     status = Nucleus_String_create(&self->name, u8"Nucleus: Media OpenGL Plugin");
     if (Nucleus_Unlikely(status)) return status;
     //
     NUCLEUS_OBJECT(self)->type = type;
-    return Nucleus_Status_Success;
+    //
+	return Nucleus_Status_Success;
 }
 
-Nucleus_NonNull() Nucleus_Status
-Nucleus_Media_Plugin_OpenGL_Plugin_create
-    (
-        Nucleus_Media_Plugin_OpenGL_Plugin **plugin
-    )
-{
-    if (Nucleus_Unlikely(!plugin)) return Nucleus_Status_InvalidArgument;
-    Nucleus_Status status;
-    Nucleus_Media_Plugin_OpenGL_Plugin *temporary;
-    status = Nucleus_Object_allocate((Nucleus_Object **)&temporary, 
-                                     sizeof(Nucleus_Media_Plugin_OpenGL_Plugin));
-    if (Nucleus_Unlikely(status)) return status;
-    status = Nucleus_Media_Plugin_OpenGL_Plugin_construct(temporary);
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(temporary));
-        return status;
-    }
-    *plugin = temporary;
-    return Nucleus_Status_Success;
-}
+Nucleus_DefineDefaultCreate(Nucleus_Media_Plugin_OpenGL_Plugin)

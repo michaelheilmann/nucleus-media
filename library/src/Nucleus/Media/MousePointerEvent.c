@@ -22,6 +22,13 @@ constructDispatch
     )
 { return Nucleus_Status_Success; }
 
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
+    (
+        Nucleus_MousePointerEvent_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
+
 Nucleus_NonNull(1) Nucleus_Status
 Nucleus_MousePointerEvent_construct
     (
@@ -46,35 +53,13 @@ Nucleus_MousePointerEvent_construct
     return Nucleus_Status_Success;
 }
 
-Nucleus_NonNull(1) Nucleus_Status
-Nucleus_MousePointerEvent_create
-    (
-        Nucleus_MousePointerEvent **mousePointerEvent,
-        Nucleus_MousePointerEventKinds kind,
-        int x, int y,
-        int modifiers
-    )
-{
-    if (Nucleus_Unlikely(!mousePointerEvent)) return Nucleus_Status_InvalidArgument;
-    //
-    Nucleus_Status status;
-    Nucleus_MousePointerEvent *temporary;
-    //
-    status = Nucleus_Object_allocate((Nucleus_Object **)&temporary,
-                                     sizeof(Nucleus_MousePointerEvent));
-    if (Nucleus_Unlikely(status)) return status;
-    //
-    status = Nucleus_MousePointerEvent_construct(temporary, kind, x, y, modifiers);
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(temporary));
-        return status;
-    }
-    //
-    *mousePointerEvent = temporary;
-    //
-    return Nucleus_Status_Success;
-}
+Nucleus_DefineCreate(Nucleus_MousePointerEvent,
+                     Nucleus_Parameters(Nucleus_MousePointerEventKinds kind,
+					                    int x, int y,
+										int modifiers),
+					 Nucleus_Arguments(kind,
+					                   x, y,
+									   modifiers))
 
 Nucleus_NonNull(1) Nucleus_Status
 Nucleus_MousePointerEvent_getMousePointerEventKind

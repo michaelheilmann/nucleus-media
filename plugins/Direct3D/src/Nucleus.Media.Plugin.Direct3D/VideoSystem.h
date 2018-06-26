@@ -9,7 +9,7 @@ Nucleus_ClassTypeDeclaration(Nucleus_Media_Plugin_Direct3D_Export,
                              Nucleus_Media_Plugin_Direct3D_VideoSystem,
                              Nucleus_Media_VideoSystem)
 #define NUCLEUS_MEDIA_PLUGIN_DIRECT3D_VIDEOSYSTEM(p) ((Nucleus_Media_Plugin_Direct3D_VideoSystem *)(p))
-#define NUCLEUS_MEDIA_PLUGIN_DIRECT3D_VIDEOSYSTEM_CLASS(p) ((Nucleus_Media_Plugin_Direct3D_Class *)(p))
+#define NUCLEUS_MEDIA_PLUGIN_DIRECT3D_VIDEOSYSTEM_CLASS(p) ((Nucleus_Media_Plugin_Direct3D_VideoSystem_Class *)(p))
 
 struct Nucleus_Media_Plugin_Direct3D_VideoSystem
 {
@@ -30,5 +30,5 @@ Nucleus_Media_Plugin_Direct3D_VideoSystem_construct
 Nucleus_NonNull() Nucleus_Status
 Nucleus_Media_Plugin_Direct3D_VideoSystem_create
     (
-        Nucleus_Media_Plugin_Direct3D_VideoSystem **audioSystem
+        Nucleus_Media_Plugin_Direct3D_VideoSystem **videoSystem
     );

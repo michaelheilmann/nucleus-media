@@ -16,6 +16,13 @@ constructDispatch
     )
 { return Nucleus_Status_Success; }
 
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
+    (
+        Nucleus_Event_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
+
 Nucleus_NonNull(1) static Nucleus_Status
 destruct
     (

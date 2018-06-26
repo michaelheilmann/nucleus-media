@@ -14,6 +14,13 @@ constructDispatch
 { return Nucleus_Status_Success; }
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
+    (
+        Nucleus_Media_VideoSystem_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
+
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
     (
         Nucleus_Media_VideoSystem *self
@@ -35,4 +42,15 @@ Nucleus_Media_VideoSystem_construct
     if (Nucleus_Unlikely(status)) return status;
     NUCLEUS_OBJECT(self)->type = type;
     return Nucleus_Status_Success;
+}
+
+Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_VideoSystem_createWindow
+    (
+        Nucleus_Media_VideoSystem *self,
+		Nucleus_Media_VideoSystemWindow **window
+    )
+{
+    if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
+	return getDispatch(self)->createWindow(self, window);
 }

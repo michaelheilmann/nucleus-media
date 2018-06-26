@@ -21,7 +21,7 @@ createSystem
         Nucleus_Media_Plugin_XAudio2_AudioSystemFactory *self,
         Nucleus_Media_AudioSystem **system
     );
-    
+
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 constructDispatch
     (
@@ -32,6 +32,13 @@ constructDispatch
     NUCLEUS_MEDIA_AUDIOSYSTEMFACTORY_CLASS(dispatch)->getSystemName = (Nucleus_Status(*)(Nucleus_Media_AudioSystemFactory *, Nucleus_String **))&getSystemName;
     return Nucleus_Status_Success;
 }
+
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
+    (
+        Nucleus_Media_Plugin_XAudio2_AudioSystemFactory_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
@@ -87,29 +94,4 @@ Nucleus_Media_Plugin_XAudio2_AudioSystemFactory_construct
     return Nucleus_Status_Success;
 }
 
-Nucleus_NonNull() Nucleus_Status
-Nucleus_Media_Plugin_XAudio2_AudioSystemFactory_create
-    (
-        Nucleus_Media_Plugin_XAudio2_AudioSystemFactory **audioSystemFactory
-    )
-{
-    // validate arguments
-    if (Nucleus_Unlikely(!audioSystemFactory)) return Nucleus_Status_InvalidArgument;
-    Nucleus_Status status;
-    Nucleus_Media_Plugin_XAudio2_AudioSystemFactory *temporary;
-    // allocate
-    status = Nucleus_Object_allocate((Nucleus_Object **)&temporary,
-                                     sizeof(Nucleus_Media_Plugin_XAudio2_AudioSystemFactory));
-    if (Nucleus_Unlikely(status)) return status;
-    // construct
-    status = Nucleus_Media_Plugin_XAudio2_AudioSystemFactory_construct(temporary);
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(temporary));
-        return status;
-    }
-    // assign result
-    *audioSystemFactory = temporary;
-    // return with success
-    return Nucleus_Status_Success;
-}
+Nucleus_DefineDefaultCreate(Nucleus_Media_Plugin_XAudio2_AudioSystemFactory)

@@ -4,7 +4,7 @@
 #include "Nucleus/Memory.h"
 
 Nucleus_ClassTypeDefinition(Nucleus_Media_Library_Export,
-                            "Nucleus.KeyboardKeyEvent",
+                            u8"Nucleus.KeyboardKeyEvent",
                             Nucleus_KeyboardKeyEvent,
                             Nucleus_Event)
 
@@ -17,6 +17,13 @@ destruct
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 constructDispatch
+    (
+        Nucleus_KeyboardKeyEvent_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
+
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
     (
         Nucleus_KeyboardKeyEvent_Class *dispatch
     )
@@ -45,35 +52,13 @@ Nucleus_KeyboardKeyEvent_construct
     return Nucleus_Status_Success;
 }
 
-Nucleus_NonNull(1) Nucleus_Status
-Nucleus_KeyboardKeyEvent_create
-    (
-        Nucleus_KeyboardKeyEvent **keyboardKeyEvent,
-        Nucleus_KeyboardKeyEventKinds kind,
-        Nucleus_KeyboardKeys key,
-        int modifiers
-    )
-{
-    if (Nucleus_Unlikely(!keyboardKeyEvent)) return Nucleus_Status_InvalidArgument;
-    //
-    Nucleus_Status status;
-    Nucleus_KeyboardKeyEvent *temporary;
-    //
-    status = Nucleus_Object_allocate((Nucleus_Object **)&temporary,
-                                     sizeof(Nucleus_KeyboardKeyEvent));
-    if (Nucleus_Unlikely(status)) return status;
-    //
-    status = Nucleus_KeyboardKeyEvent_construct(temporary, kind, key, modifiers);
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(temporary));
-        return status;
-    }
-    //
-    *keyboardKeyEvent = temporary;
-    //
-    return Nucleus_Status_Success;
-}
+Nucleus_DefineCreate(Nucleus_KeyboardKeyEvent,
+                     Nucleus_Parameters(Nucleus_KeyboardKeyEventKinds kind,
+					                    Nucleus_KeyboardKeys key,
+								        int modifiers),
+					 Nucleus_Arguments(kind,
+					                   key,
+									   modifiers))
 
 Nucleus_NonNull(1) Nucleus_Status
 Nucleus_KeyboardKeyEvent_getKeyboardKeyEventKind

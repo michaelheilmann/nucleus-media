@@ -14,6 +14,13 @@ constructDispatch
 { return Nucleus_Status_Success; }
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
+    (
+        Nucleus_Media_AudioSystem_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
+
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
     (
         Nucleus_Media_AudioSystem *self

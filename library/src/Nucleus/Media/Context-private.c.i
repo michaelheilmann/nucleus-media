@@ -297,17 +297,17 @@ Nucleus_MediaContext_startupPlugins
 {
     if (Nucleus_Unlikely(!mediaContext)) return Nucleus_Status_InvalidArgument;
     Nucleus_Status status;
-    Nucleus_Collections_PointerHashMap_Enumerator e;
-    status = Nucleus_Collections_PointerHashMap_Enumerator_initialize(&e, &mediaContext->plugins);
+    Nucleus_Collections_PointerHashMap_ConstantEnumerator e;
+    status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_initialize(&e, &mediaContext->plugins);
     if (Nucleus_Unlikely(status)) return status;
     while (Nucleus_Boolean_True)
     {
         //
         Nucleus_Boolean hasValue;
-        status = Nucleus_Collections_PointerHashMap_Enumerator_hasValue(&e, &hasValue);
+        status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_hasValue(&e, &hasValue);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_Collections_PointerHashMap_Enumerator_uninitialize(&e);
+            Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
             Nucleus_MediaContext_unregisterFactories(mediaContext);
             Nucleus_MediaContext_shutdownPlugins(mediaContext);
             return status;
@@ -319,11 +319,11 @@ Nucleus_MediaContext_startupPlugins
         //
         char *key;
         Nucleus_Media_Plugin *value;
-        status = Nucleus_Collections_PointerHashMap_Enumerator_getValue(&e, (void **)&key,
-                                                                            (void **)&value);
+        status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_getValue(&e, (void **)&key,
+                                                                                (void **)&value);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_Collections_PointerHashMap_Enumerator_uninitialize(&e);
+            Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
             Nucleus_MediaContext_unregisterFactories(mediaContext);
             Nucleus_MediaContext_shutdownPlugins(mediaContext);
             return status;
@@ -332,22 +332,22 @@ Nucleus_MediaContext_startupPlugins
         status = Nucleus_Media_Plugin_startup(value);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_Collections_PointerHashMap_Enumerator_uninitialize(&e);
+            Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
             Nucleus_MediaContext_unregisterFactories(mediaContext);
             Nucleus_MediaContext_shutdownPlugins(mediaContext);
             return status;
         }
         //
-        status = Nucleus_Collections_PointerHashMap_Enumerator_next(&e);
+        status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_next(&e);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_Collections_PointerHashMap_Enumerator_uninitialize(&e);
+            Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
             Nucleus_MediaContext_unregisterFactories(mediaContext);
             Nucleus_MediaContext_shutdownPlugins(mediaContext);
             return status;
         }
     }
-    Nucleus_Collections_PointerHashMap_Enumerator_uninitialize(&e);
+    Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
     return Nucleus_Status_Success;
 }
 
@@ -359,17 +359,17 @@ Nucleus_MediaContext_shutdownPlugins
 {
     if (Nucleus_Unlikely(!mediaContext)) return Nucleus_Status_InvalidArgument;
     Nucleus_Status status;
-    Nucleus_Collections_PointerHashMap_Enumerator e;
-    status = Nucleus_Collections_PointerHashMap_Enumerator_initialize(&e, &mediaContext->plugins);
+    Nucleus_Collections_PointerHashMap_ConstantEnumerator e;
+    status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_initialize(&e, &mediaContext->plugins);
     if (Nucleus_Unlikely(status)) return status;
     while (Nucleus_Boolean_True)
     {
         //
         Nucleus_Boolean hasValue;
-        status = Nucleus_Collections_PointerHashMap_Enumerator_hasValue(&e, &hasValue);
+        status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_hasValue(&e, &hasValue);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_Collections_PointerHashMap_Enumerator_uninitialize(&e);
+            Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
             return status;
         }
         if (!hasValue)
@@ -379,30 +379,30 @@ Nucleus_MediaContext_shutdownPlugins
         //
         char *key;
         Nucleus_Media_Plugin *value;
-        status = Nucleus_Collections_PointerHashMap_Enumerator_getValue(&e, (void **)&key,
-                                                                            (void **)&value);
+        status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_getValue(&e, (void **)&key,
+                                                                                (void **)&value);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_Collections_PointerHashMap_Enumerator_uninitialize(&e);
+            Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
             return status;
         }
         //
         status = Nucleus_Media_Plugin_shutdown(value);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_Collections_PointerHashMap_Enumerator_uninitialize(&e);
+            Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
             return status;
         }
         //
-        status = Nucleus_Collections_PointerHashMap_Enumerator_next(&e);
+        status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_next(&e);
         if (Nucleus_Unlikely(status))
         {
-            Nucleus_Collections_PointerHashMap_Enumerator_uninitialize(&e);
+            Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
             Nucleus_MediaContext_shutdownPlugins(mediaContext);
             return status;
         }
     }
-    Nucleus_Collections_PointerHashMap_Enumerator_uninitialize(&e);
+    Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
     return Nucleus_Status_Success;
 }
 

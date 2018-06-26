@@ -21,6 +21,13 @@ constructDispatch
 }
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+constructSignals
+    (
+        Nucleus_Media_VideoSystemFactory_Class *dispatch
+    )
+{ return Nucleus_Status_Success; }
+
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
     (
         Nucleus_Media_VideoSystemFactory *self
@@ -50,7 +57,8 @@ Nucleus_Media_VideoSystemFactory_getSystemName
         Nucleus_String **systemName
     )
 {
-    return NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY_CLASS(NUCLEUS_OBJECT(self)->type->classType.dispatch)->getSystemName(self, systemName);
+    if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
+    return getDispatch(self)->getSystemName(self, systemName);
 }
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
@@ -60,5 +68,6 @@ Nucleus_Media_VideoSystemFactory_createSystem
         Nucleus_Media_VideoSystem **system
     )
 {
-    return NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY_CLASS(NUCLEUS_OBJECT(self)->type->classType.dispatch)->createSystem(self, system);
+    if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
+    return getDispatch(self)->createSystem(self, system);
 }
