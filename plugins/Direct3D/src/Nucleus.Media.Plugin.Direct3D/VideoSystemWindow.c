@@ -7,14 +7,14 @@ Nucleus_ClassTypeDefinition(Nucleus_Media_Plugin_Direct3D_Export,
                             Nucleus_Media_Plugin_Direct3D_VideoSystemWindow,
                             Nucleus_Media_VideoSystemWindow)
     
-Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+Nucleus_NonNull() static Nucleus_Status
 constructDispatch
     (
         Nucleus_Media_Plugin_Direct3D_VideoSystemWindow_Class *dispatch
     )
 { return Nucleus_Status_Success; }
 
-Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+Nucleus_NonNull() static Nucleus_Status
 constructSignals
     (
         Nucleus_Media_Plugin_Direct3D_VideoSystemWindow_Class *dispatch

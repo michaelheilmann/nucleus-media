@@ -9,21 +9,21 @@ Nucleus_ClassTypeDefinition(Nucleus_Media_Library_Export,
                             Nucleus_Event,
                             Nucleus_Object)
 
-Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+Nucleus_NonNull() static Nucleus_Status
 constructDispatch
     (
         Nucleus_Event_Class *dispatch
     )
 { return Nucleus_Status_Success; }
 
-Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+Nucleus_NonNull() static Nucleus_Status
 constructSignals
     (
         Nucleus_Event_Class *dispatch
     )
 { return Nucleus_Status_Success; }
 
-Nucleus_NonNull(1) static Nucleus_Status
+Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
     (
         Nucleus_Event *event

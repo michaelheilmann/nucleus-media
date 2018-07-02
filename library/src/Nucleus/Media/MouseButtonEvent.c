@@ -15,14 +15,14 @@ destruct
     )
 { return Nucleus_Status_Success; }
 
-Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+Nucleus_NonNull() static Nucleus_Status
 constructDispatch
     (
         Nucleus_MouseButtonEvent_Class *dispatch
     )
 { return Nucleus_Status_Success; }
 
-Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+Nucleus_NonNull() static Nucleus_Status
 constructSignals
     (
         Nucleus_MouseButtonEvent_Class *dispatch

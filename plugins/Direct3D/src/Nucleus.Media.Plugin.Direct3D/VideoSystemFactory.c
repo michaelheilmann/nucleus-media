@@ -21,7 +21,7 @@ createSystem
         Nucleus_Media_VideoSystem **system
     );
     
-Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+Nucleus_NonNull() static Nucleus_Status
 constructDispatch
     (
         Nucleus_Media_Plugin_Direct3D_VideoSystemFactory_Class *dispatch
@@ -32,7 +32,7 @@ constructDispatch
     return Nucleus_Status_Success;
 }
 
-Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+Nucleus_NonNull() static Nucleus_Status
 constructSignals
     (
         Nucleus_Media_Plugin_Direct3D_VideoSystemFactory_Class *dispatch

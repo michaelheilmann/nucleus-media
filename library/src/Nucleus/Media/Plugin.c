@@ -41,7 +41,7 @@ destruct
     )
 { return Nucleus_Status_Success; }
 
-Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+Nucleus_NonNull() static Nucleus_Status
 constructDispatch
     (
         Nucleus_Media_Plugin_Class *dispatch
@@ -54,7 +54,7 @@ constructDispatch
     return Nucleus_Status_Success;
 }
 
-Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
+Nucleus_NonNull() static Nucleus_Status
 constructSignals
     (
         Nucleus_Media_Plugin_Class *dispatch
