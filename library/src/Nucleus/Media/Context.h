@@ -9,7 +9,9 @@
 
 // Forward declarations.
 typedef struct Nucleus_Media_AudioSystemFactory Nucleus_Media_AudioSystemFactory;
+typedef struct Nucleus_Media_AudioSystemConfiguration Nucleus_Media_AudioSystemConfiguration;
 typedef struct Nucleus_Media_VideoSystemFactory Nucleus_Media_VideoSystemFactory;
+typedef struct Nucleus_Media_VideoSystemConfiguration Nucleus_Media_VideoSystemConfiguration;
 
 // `Nucleus_MediaContext` is a representation of a heavy-weight collection of resources pertaining
 // to audio, video, and haptic functionality.
@@ -111,7 +113,9 @@ Nucleus_MediaContext_startup
     (
         Nucleus_MediaContext *context,
         Nucleus_Status(*selectVideoSystemFactory)(Nucleus_Media_VideoSystemFactory **factory),
-        Nucleus_Status(*selectAudioSystemFactory)(Nucleus_Media_AudioSystemFactory **factory)
+        Nucleus_Status(*selectVideoSystemConfiguration)(Nucleus_Media_VideoSystemConfiguration **configuration),
+        Nucleus_Status(*selectAudioSystemFactory)(Nucleus_Media_AudioSystemFactory **factory),
+        Nucleus_Status(*selectAudioSystemConfiguration)(Nucleus_Media_AudioSystemConfiguration **configuration)
     );
 
 Nucleus_NonNull() Nucleus_Status

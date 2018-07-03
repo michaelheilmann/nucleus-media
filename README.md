@@ -7,7 +7,8 @@ Nucleus: Media is made available publicly under the
 on
 [Github](https://github.com/primordialmachine/nucleus-media).
 
-Nucleus: Media depends on [Nucleus](https://github.com/primordialmachine/nucleus).
+Nucleus: Media depends on [Nucleus: Object](https://github.com/primordialmachine/nucleus-object) and
+[Nucleus](https://github.com/primordialmachine/nucleus).
 
 ## Build instructions
   
@@ -21,7 +22,7 @@ See below for build instructions for some of the individual environments.
 
 
 * [Windows 10/Visual Studio Community 2017](https://github.com/primordialmachine/nucleus/blob/master/documentation/building-under-windows-10-visual-studio-community-2017.md)
-* [Windows 10/Cygwin/GCC](https://github.com/primordialmachine/nucleus/blob/master/documentation/building-under-windows-10-cygwin-gcc.md)
+* [Windows 10/Cygwin/GCC](documentation/building-under-windows-10-cygwin-gcc.md)
 * [Linux/GCC](https://github.com/primordialmachine/nucleus/blob/master/documentation/building-under-linux-gcc.md)
 * [Linux/Clang](https://github.com/primordialmachine/nucleus/blob/master/documentation/building-under-linux-clang.md)
 * [macOS/Clang](https://github.com/primordialmachine/nucleus/blob/master/documentation/building-under-macos-clang.md)

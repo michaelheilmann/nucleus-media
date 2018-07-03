@@ -23,6 +23,7 @@ struct Nucleus_Media_VideoSystemFactory_Class
     Nucleus_Object_Class parent;
     Nucleus_Status (*createSystem)(Nucleus_Media_VideoSystemFactory *self, Nucleus_Media_VideoSystem **system);
     Nucleus_Status (*getSystemName)(Nucleus_Media_VideoSystemFactory *self, Nucleus_String **systemName);
+	Nucleus_Status (*getConfigurations)(Nucleus_Media_VideoSystemFactory *self, Nucleus_ObjectArray **configurations);
 }; // struct Nucleus_Media_VideoSystemFactory_Class
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
@@ -43,4 +44,11 @@ Nucleus_Media_VideoSystemFactory_createSystem
     (
         Nucleus_Media_VideoSystemFactory *self,
         Nucleus_Media_VideoSystem **system
+    );
+
+Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_VideoSystemFactory_getConfigurations
+    (
+        Nucleus_Media_VideoSystemFactory *self,
+        Nucleus_ObjectArray **configurations
     );

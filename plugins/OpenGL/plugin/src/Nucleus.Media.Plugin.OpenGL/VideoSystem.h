@@ -2,6 +2,10 @@
 #pragma once
 
 #include "Nucleus/Media/VideoSystem.h"
+#include "Nucleus/Collections/PointerArray.h"
+
+// Forward declaration.
+typedef struct Nucleus_Media_Plugin_OpenGL_VideoSystemWindow Nucleus_Media_Plugin_OpenGL_VideoSystemWindow;
 
 #define Nucleus_Media_Plugin_OpenGL_Export
 Nucleus_ClassTypeDeclaration(Nucleus_Media_Plugin_OpenGL_Export,
@@ -14,6 +18,8 @@ Nucleus_ClassTypeDeclaration(Nucleus_Media_Plugin_OpenGL_Export,
 struct Nucleus_Media_Plugin_OpenGL_VideoSystem
 {
     Nucleus_Media_VideoSystem parent;
+    Nucleus_Media_Plugin_OpenGL_VideoSystemWindow *mainWindow; /* The main window. */
+    Nucleus_Collections_PointerArray windows; /* List of windows. */
 }; // struct Nucleus_Media_Plugin_OpenGL_VideoSystem
 
 struct Nucleus_Media_Plugin_OpenGL_VideoSystem_Class

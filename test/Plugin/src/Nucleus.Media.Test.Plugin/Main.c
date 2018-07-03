@@ -166,7 +166,9 @@ main
     if (Nucleus_Unlikely(status)) { exitCode = EXIT_FAILURE; goto End; }
     //
     status = Nucleus_MediaContext_startup(context, &selectVideoSystemFactory,
-                                                   &selectAudioSystemFactory);
+                                                   NULL,
+                                                   &selectAudioSystemFactory,
+                                                   NULL);
     if (Nucleus_Unlikely(status))
     { exitCode = EXIT_FAILURE; goto End; }
     //
