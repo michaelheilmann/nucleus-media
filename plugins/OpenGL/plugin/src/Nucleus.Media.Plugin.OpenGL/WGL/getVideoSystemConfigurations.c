@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <WinUser.h>
 
@@ -50,8 +51,8 @@ getConfiguration
     return Nucleus_Status_Success;
 }
 
-Nucleus_Status
-getConfigurations
+Nucleus_NonNull() Nucleus_Status
+getVideoSystemConfigurations
     (
         Nucleus_ObjectArray *configurations
     )

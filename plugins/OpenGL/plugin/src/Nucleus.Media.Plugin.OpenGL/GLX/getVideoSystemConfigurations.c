@@ -3,6 +3,10 @@
 #if (Nucleus_OperatingSystem == Nucleus_OperatingSystem_LINUX) || \
     (Nucleus_OperatingSystem == Nucleus_OperatingSystem_CYGWIN) 
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <GL/gl.h>
+#include <GL/glx.h>
 #include <stdio.h>
 
 #include "Nucleus/Media/VideoSystemConfiguration.h"
@@ -61,8 +65,8 @@ getConfiguration
     return Nucleus_Status_Success;
 }
 
-Nucleus_Status
-getConfigurations
+Nucleus_NonNull() Nucleus_Status
+getVideoSystemConfigurations
     (
 		Nucleus_ObjectArray *configurations
     )
@@ -100,7 +104,6 @@ getConfigurations
                                                                  sourceConfigurations[i]);
         if (sourceVisualInfo)
         {
-            Nucleus_Status status;
             Nucleus_Media_VideoSystemConfiguration *configuration;
 
             status = Nucleus_Media_VideoSystemConfiguration_create(&configuration);

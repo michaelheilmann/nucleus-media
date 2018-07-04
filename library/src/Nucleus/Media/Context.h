@@ -113,9 +113,11 @@ Nucleus_MediaContext_startup
     (
         Nucleus_MediaContext *context,
         Nucleus_Status(*selectVideoSystemFactory)(Nucleus_Media_VideoSystemFactory **factory),
-        Nucleus_Status(*selectVideoSystemConfiguration)(Nucleus_Media_VideoSystemConfiguration **configuration),
+        Nucleus_Status(*selectVideoSystemConfiguration)(Nucleus_ObjectEnumerator *enumerator,
+                                                        Nucleus_Media_VideoSystemConfiguration **configuration),
         Nucleus_Status(*selectAudioSystemFactory)(Nucleus_Media_AudioSystemFactory **factory),
-        Nucleus_Status(*selectAudioSystemConfiguration)(Nucleus_Media_AudioSystemConfiguration **configuration)
+        Nucleus_Status(*selectAudioSystemConfiguration)(Nucleus_ObjectEnumerator *enumerator,
+                                                        Nucleus_Media_AudioSystemConfiguration **configuration)
     );
 
 Nucleus_NonNull() Nucleus_Status

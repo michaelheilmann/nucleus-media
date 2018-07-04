@@ -1,3 +1,4 @@
+// Copyright (c) 2018 Michael Heilmann
 #include "Nucleus/Media/VideoSystemConfiguration.h"
 
 Nucleus_ClassTypeDefinition(Nucleus_Media_Library_Export,
@@ -37,7 +38,7 @@ Nucleus_Media_VideoSystemConfiguration_construct
     Nucleus_Status status;
     status = Nucleus_Media_VideoSystemConfiguration_getType(&type);
     if (Nucleus_Unlikely(status)) return status;
-    status = Nucleus_Media_VideoSystemConfiguration_construct(NUCLEUS_MEDIA_VIDEOSYSTEMCONFIGURATION(self));
+    status = Nucleus_Object_construct(NUCLEUS_OBJECT(self));
     if (Nucleus_Unlikely(status)) return status;
 	self->numberOfSampleBuffers = 0;
 	self->numberOfSamples = 0;

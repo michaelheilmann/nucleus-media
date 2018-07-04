@@ -2,6 +2,19 @@
 #include "Nucleus.Media.Plugin.OpenGL/VideoSystemFactory.h"
 #include "Nucleus.Media.Plugin.OpenGL/VideoSystem.h"
 
+#if (Nucleus_OperatingSystem == Nucleus_OperatingSystem_LINUX) || \
+    (Nucleus_OperatingSystem == Nucleus_OperatingSystem_CYGWIN) 
+
+#include "Nucleus.Media.Plugin.OpenGL/GLX/getVideoSystemConfigurations.h"
+
+#elif (Nucleus_OperatingSystem == Nucleus_OperatingSystem_WINDOWS)
+
+#include "Nucleus.Media.Plugin.OpenGL/WGL/getVideoSystemConfigurations.h"
+
+#else
+    #error("environment not supported)
+#endif
+
 Nucleus_ClassTypeDefinition(Nucleus_Media_Plugin_OpenGL_Export,
                             "Nucleus.Media.Plugin.OpenGL.VideoSystemFactory",
                             Nucleus_Media_Plugin_OpenGL_VideoSystemFactory,
@@ -22,6 +35,13 @@ createSystem
     );
 
 Nucleus_NonNull() static Nucleus_Status
+getConfigurations
+    (
+        Nucleus_Media_Plugin_OpenGL_VideoSystemFactory *self,
+        Nucleus_ObjectArray **configurations
+    );
+
+Nucleus_NonNull() static Nucleus_Status
 constructDispatch
     (
         Nucleus_Media_Plugin_OpenGL_VideoSystemFactory_Class *dispatch
@@ -29,6 +49,7 @@ constructDispatch
 {
     NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY_CLASS(dispatch)->createSystem = (Nucleus_Status (*)(Nucleus_Media_VideoSystemFactory *, Nucleus_Media_VideoSystem **))&createSystem;
     NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY_CLASS(dispatch)->getSystemName = (Nucleus_Status (*)(Nucleus_Media_VideoSystemFactory *, Nucleus_String **))&getSystemName;
+    NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY_CLASS(dispatch)->getConfigurations = (Nucleus_Status (*)(Nucleus_Media_VideoSystemFactory *, Nucleus_ObjectArray **))&getConfigurations;
     return Nucleus_Status_Success;
 }
 
@@ -68,6 +89,36 @@ createSystem
 {
     if (Nucleus_Unlikely(!self || !system)) return Nucleus_Status_InvalidArgument;
     return Nucleus_Media_Plugin_OpenGL_VideoSystem_create((Nucleus_Media_Plugin_OpenGL_VideoSystem **)system);
+}
+
+Nucleus_NonNull() static Nucleus_Status
+getConfigurations
+    (
+        Nucleus_Media_Plugin_OpenGL_VideoSystemFactory *self,
+        Nucleus_ObjectArray **configurations
+    )
+{
+    if (Nucleus_Unlikely(!self || !configurations)) return Nucleus_Status_InvalidArgument;
+    //
+    Nucleus_Status status;
+    Nucleus_ObjectArray *temporary;
+    //
+    status = Nucleus_ObjectArray_create(&temporary);
+    if (Nucleus_Unlikely(status))
+    {
+        return status;
+    }
+    //
+    status = getVideoSystemConfigurations(temporary);
+    if (Nucleus_Unlikely(status))
+    {
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(temporary));
+        return status;
+    }
+    //
+    *configurations = temporary;
+    //
+    return Nucleus_Status_Success;
 }
 
 Nucleus_NonNull() Nucleus_Status

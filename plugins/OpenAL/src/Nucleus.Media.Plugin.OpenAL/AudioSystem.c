@@ -1,6 +1,8 @@
 // Copyright (c) 2018 Michael Heilmann
 #include "Nucleus.Media.Plugin.OpenAL/AudioSystem.h"
 
+#include <stdio.h>
+
 Nucleus_ClassTypeDefinition(Nucleus_Media_Plugin_OpenAL_Export,
                             u8"Nucleus.Media.Plugin.OpenAL.AudioSystem",
                             Nucleus_Media_Plugin_OpenAL_AudioSystem,
@@ -25,7 +27,11 @@ destruct
     (
         Nucleus_Media_Plugin_OpenAL_AudioSystem *self
     )
-{ return Nucleus_Status_Success; }
+{
+    alcCloseDevice(self->device);
+    self->device = NULL;
+    return Nucleus_Status_Success;
+}
 
 Nucleus_NonNull() Nucleus_Status
 Nucleus_Media_Plugin_OpenAL_AudioSystem_construct
@@ -42,6 +48,14 @@ Nucleus_Media_Plugin_OpenAL_AudioSystem_construct
     if (Nucleus_Unlikely(status)) return status;
     status = Nucleus_String_create(&self->systemName, u8"OpenAL Audio System");
     if (Nucleus_Unlikely(status)) return status;
+    //
+    self->device = alcOpenDevice(NULL);
+    if (!self->device)
+    {
+        fprintf(stderr, u8"alcOpenDevice failed\n");
+        return Nucleus_Status_EnvironmentFailed;
+    }
+    //
     NUCLEUS_OBJECT(self)->type = type;
     return Nucleus_Status_Success;
 }

@@ -72,17 +72,23 @@ loadDynamicLoadableLibraries
     status = loadDynamicallyLoadableLibrary(u8"Nucleus.Media.Plugin.XAudio2");
     if (status) { return status; }
 #elif (Nucleus_OperatingSystem == Nucleus_OperatingSystem_LINUX)  || \
-      (Nucleus_OperatingSystem == Nucleus_OperatingSystem_CYGWIN) || \
-      (Nucleus_OperatingSystem == Nucleus_OperatingSystem_MACOS)
+      (Nucleus_OperatingSystem == Nucleus_OperatingSystem_CYGWIN)
     //
     status = loadDynamicallyLoadableLibrary(u8"Nucleus.Media.Plugin.OpenGL");
     if (status) { return status; }
     //
     status = loadDynamicallyLoadableLibrary(u8"Nucleus.Media.Plugin.OpenAL");
     if (status) { return status; }
+#elif (Nucleus_OperatingSystem == Nucleus_OperatingSystem_MACOS)
+    //
+    status = loadDynamicallyLoadableLibrary(u8"Nucleus.Media.Plugin.Metal");
+    if (status) { return status; }
+    //
+    status = loadDynamicallyLoadableLibrary(u8"Nucleus.Media.Plugin.OpenAL");
+    if (status) { return status; }
 #else
     //
-    #error("environment not supported")
+    #error(u8"environment not supported")
 #endif
     return Nucleus_Status_Success;
 }
@@ -101,7 +107,7 @@ initialize
     //
     Nucleus_Status status;
     //
-    status = Nucleus_Types_initialize();
+    status = Nucleus_Objects_initialize();
     if (Nucleus_Unlikely(status))
     {
         return status; 
@@ -170,7 +176,7 @@ uninitialize
     //
     Nucleus_Collections_PointerHashMap_uninitialize(&mediaContext->plugins);
     //
-    Nucleus_Types_uninitialize();
+    Nucleus_Objects_uninitialize();
     //
     return Nucleus_Status_Success;
 }

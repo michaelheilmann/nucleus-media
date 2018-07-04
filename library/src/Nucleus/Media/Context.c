@@ -96,9 +96,11 @@ Nucleus_MediaContext_startup
     (
         Nucleus_MediaContext *context,
         Nucleus_Status(*selectVideoSystemFactory)(Nucleus_Media_VideoSystemFactory **factory),
-        Nucleus_Status(*selectVideoSystemConfiguration)(Nucleus_Media_VideoSystemConfiguration **configuration),
+        Nucleus_Status(*selectVideoSystemConfiguration)(Nucleus_ObjectEnumerator *enumerator,
+                                                        Nucleus_Media_VideoSystemConfiguration **configuration),
         Nucleus_Status(*selectAudioSystemFactory)(Nucleus_Media_AudioSystemFactory **factory),
-        Nucleus_Status(*selectAudioSystemConfiguration)(Nucleus_Media_AudioSystemConfiguration **configuration)
+        Nucleus_Status(*selectAudioSystemConfiguration)(Nucleus_ObjectEnumerator *enumerator,
+                                                        Nucleus_Media_AudioSystemConfiguration **configuration)
     )
 {
     Nucleus_Status status;
@@ -112,7 +114,11 @@ Nucleus_MediaContext_startup
     status = Nucleus_MediaContext_startupPlugins(context);
     if (Nucleus_Unlikely(status)) return status;
     //
-    if (selectVideoSystemFactory)
+    if (!selectVideoSystemFactory)
+    {
+        fprintf(stderr, "ERROR: no video system selection function provided\n");
+        return Nucleus_Status_InvalidArgument;
+    }
     {
         Nucleus_Media_VideoSystemFactory *factory;
         status = selectVideoSystemFactory(&factory);
@@ -120,19 +126,65 @@ Nucleus_MediaContext_startup
         {
             return status;
         }
-        if (factory)
+        if (!factory)
         {
-            status = Nucleus_Media_VideoSystemFactory_createSystem(factory, &context->videoSystem);
-            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
-            if (status) return status;
+            fprintf(stderr, "no video system factory selected\n");
+            return Nucleus_Status_InvalidArgument;
         }
-    }
-    else
-    {
-        fprintf(stderr, "WARNING: no video system selection function provided\n");
+        if (!selectVideoSystemConfiguration)
+        {
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+            fprintf(stderr, "ERROR: no video system configuration selection function provided\n");
+            return Nucleus_Status_InvalidArgument;
+        }
+        //
+        Nucleus_ObjectArray *configurations;
+        status = Nucleus_Media_VideoSystemFactory_getConfigurations(factory, &configurations);
+        if (Nucleus_Unlikely(status))
+        {
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+            return status;
+        }
+        //
+        Nucleus_ObjectEnumerator *enumerator;
+        status = Nucleus_ObjectArray_getEnumerator(configurations, &enumerator);
+        if (Nucleus_Unlikely(status))
+        {
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(configurations));
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+            return status;
+        }
+        //
+        Nucleus_Media_VideoSystemConfiguration *configuration;
+        status = (*selectVideoSystemConfiguration)(enumerator, &configuration);
+        if (Nucleus_Unlikely(status))
+        {
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(enumerator));
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(configurations));
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+            return status;
+        }
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(configurations));
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(enumerator));
+        //
+        if (!configuration)
+        {
+            fprintf(stderr, "ERROR: no video system configuration provided\n");
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+            return Nucleus_Status_InvalidArgument;
+        }
+        //
+        status = Nucleus_Media_VideoSystemFactory_createSystem(factory, &context->videoSystem);
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(configuration));
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+        if (Nucleus_Unlikely(status)) return status;
     }
     //
-    if (selectAudioSystemFactory)
+    if (!selectAudioSystemFactory)
+    {
+        fprintf(stderr, "ERROR: no audio system selection function provided\n");
+        return Nucleus_Status_InvalidArgument;
+    }
     {
         Nucleus_Media_AudioSystemFactory *factory;
         status = selectAudioSystemFactory(&factory);
@@ -140,16 +192,58 @@ Nucleus_MediaContext_startup
         {
             return status;
         }
-        if (factory)
+        if (!factory)
         {
-            status = Nucleus_Media_AudioSystemFactory_createSystem(factory, &context->audioSystem);
-            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
-            if (status) return status;
+            fprintf(stderr, "no audio system factory selected\n");
+            return Nucleus_Status_InvalidArgument;
         }
-    }
-    else
-    {
-        fprintf(stderr, "WARNING: no audio system selection function provided\n");
+        if (!selectAudioSystemConfiguration)
+        {
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+            fprintf(stderr, "ERROR: no audio system confiuration selection function provided\n");
+            return Nucleus_Status_InvalidArgument;
+        }
+        //
+        Nucleus_ObjectArray *configurations;
+        status = Nucleus_Media_AudioSystemFactory_getConfigurations(factory, &configurations);
+        if (Nucleus_Unlikely(status))
+        {
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+            return status;
+        }
+        //
+        Nucleus_ObjectEnumerator *enumerator;
+        status = Nucleus_ObjectArray_getEnumerator(configurations, &enumerator);
+        if (Nucleus_Unlikely(status))
+        {
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(configurations));
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+            return status;
+        }
+        //
+        Nucleus_Media_AudioSystemConfiguration *configuration;
+        status = (*selectAudioSystemConfiguration)(enumerator, &configuration);
+        if (Nucleus_Unlikely(status))
+        {
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(enumerator));
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(configurations));
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+            return status;
+        }
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(configurations));
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(enumerator));
+        //
+        if (!configuration)
+        {
+            fprintf(stderr, "ERROR: no audio system configuration provided\n");
+            Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+            return Nucleus_Status_InvalidArgument;
+        }
+        //
+        status = Nucleus_Media_AudioSystemFactory_createSystem(factory, &context->audioSystem);
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(configuration));
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
+        if (status) return status;
     }
     return status;
 }

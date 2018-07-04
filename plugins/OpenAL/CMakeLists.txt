@@ -8,3 +8,4 @@ define_dynamic_library(Nucleus.Media Nucleus.Media.Plugin.OpenAL ${NUCLEUS_LANGU
 target_link_libraries(Nucleus.Media.Plugin.OpenAL Nucleus.Media.Library)
 
 find_package(OpenAL REQUIRED)
+target_link_libraries(Nucleus.Media.Plugin.OpenAL ${OPENAL_LIBRARY})
