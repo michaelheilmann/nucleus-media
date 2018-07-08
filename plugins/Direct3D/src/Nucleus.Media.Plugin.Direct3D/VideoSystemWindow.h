@@ -2,6 +2,8 @@
 #pragma once
 
 #include "Nucleus/Media/VideoSystemWindow.h"
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 
 #define Nucleus_Media_Plugin_Direct3D_Export
 Nucleus_ClassTypeDeclaration(Nucleus_Media_Plugin_Direct3D_Export,
@@ -14,6 +16,7 @@ Nucleus_ClassTypeDeclaration(Nucleus_Media_Plugin_Direct3D_Export,
 struct Nucleus_Media_Plugin_Direct3D_VideoSystemWindow
 {
     Nucleus_Media_VideoSystemWindow parent;
+    HWND hWnd;
 }; // struct Nucleus_Media_Plugin_Direct3D_VideoSystemWindow
 
 struct Nucleus_Media_Plugin_Direct3D_VideoSystemWindow_Class

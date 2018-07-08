@@ -10,7 +10,7 @@ language: c
 # Compile once for Linux and once for OS X.
 os:
     - linux
-    - osx
+    #- osx
 
 # Compile once for Clang and once for GCC.
 compiler:
@@ -22,6 +22,11 @@ matrix:
     exclude:
         - compiler: gcc
         - compiler: clang
+        - compiler: clang
+          os: osx
+          env:
+            - MATRIX_EVAL_BEFORE_INSTALL="CC=clang"
+            - MATRIX_EVAL_BEFORE_SCRIPT="export CC=clang"   
     # Add non-default jobs.
     include:
         - compiler: gcc
@@ -29,30 +34,50 @@ matrix:
           addons:
             apt:
                 sources:
-                    # add PPAs with more up-to-date toolchains
+                    # Add GCC-6 by alias
+                    # See
+                    # https://docs.travis-ci.com/user/installing-dependencies/
+                    # and
+                    # https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
+                    # for more information.
                     - ubuntu-toolchain-r-test
-                    - george-edison55-precise-backports
-                    - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main'
-                      key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
                 packages:
                     # GCC 6.
                     - gcc-6
                     # CMake (outdated).
                     - cmake-data
                     - cmake
+                    # OpenAL Soft.
+                    - libopenal-dev
+                    - libopenal1
+                    # Install pulseaudio as backend for OpenAL Soft.
+                    - pulseaudio
           env:
             - MATRIX_EVAL_BEFORE_INSTALL="CC=gcc-6"
+            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; export XVFBARGS=\"-screen 0 1280x1024x24\""
+            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; export DISPLAY=:99.0"
+            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; sh -e /etc/init.d/xvfb start"
+            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; sleep 3"
             - MATRIX_EVAL_BEFORE_SCRIPT="export CC=gcc-6"    
         - compiler: clang
           os: linux
           addons:
             apt:
                 sources:
-                    # add PPAs with more up-to-date toolchains
+                    # Add GCC-6 by alias
+                    # See
+                    # https://docs.travis-ci.com/user/installing-dependencies/
+                    # and
+                    # https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
+                    # for more information.
                     - ubuntu-toolchain-r-test
-                    - george-edison55-precise-backports
-                    - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main'
-                      key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
+                    # Add LLVM 4.0 by alias
+                    # See
+                    # https://docs.travis-ci.com/user/installing-dependencies/
+                    # and
+                    # https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
+                    # for more information.
+                    - llvm-toolchain-trusty-4.0
                 packages:
                     # GCC 6
                     - gcc-6
@@ -62,18 +87,22 @@ matrix:
                     # CMake (outdated)
                     - cmake-data
                     - cmake
+                    # OpenAL Soft.
+                    - libopenal-dev
+                    - libopenal1
+                    # Install pulseaudio as backend for OpenAL Soft.
+                    - pulseaudio
           env:
             - MATRIX_EVAL_BEFORE_INSTALL="CC=clang-4.0"
+            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; export XVFBARGS=\"-screen 0 1280x1024x24\""
+            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; export DISPLAY=:99.0"
+            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; sh -e /etc/init.d/xvfb start"
+            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; sleep 3"
             - MATRIX_EVAL_BEFORE_SCRIPT="export CC=clang-4.0"
-        - compiler: clang
-          os: osx
-          env:
-            - MATRIX_EVAL_BEFORE_INSTALL="CC=clang"
-            - MATRIX_EVAL_BEFORE_SCRIPT="export CC=clang"   
 
 before_install:
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
-  
+
 # Download and install CMake.
 install:
 # Create a dependency directory. Store its path in `${DEPS_DIR}`.

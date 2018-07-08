@@ -1,8 +1,15 @@
 # Building under Windows 10/Cygwin/GCC
 Make sure you to install the required packages via the Cygwin installer to have full GLX/OpenGL 3.1
-and OpenGL support.
+and OpenAL support.
 
-Then follow the build instructions linked below.
+## OpenAL and PulseAudio
+OpenAL requires an audio backend to work with. We recommend under Cygwin to use PulseAudio.
+Install PulseAudio through your Cygwin installer. To test PulseAudio ensure to have a wave
+file at your disposal. In this example, we use `/cygdrive/c/Windows/Media/tada.wav``. You
+should hear the sound when entering `paplay /cygdrive/c/Windows/Media/tada.wav`.
+
+## Building Nucleus: Media
+Follow the build instructions linked below.
 
 **The following build instructions and build options pertain to all products from the Nucleus series.
   All products accept the build options described here.

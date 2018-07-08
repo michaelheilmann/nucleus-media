@@ -1,6 +1,8 @@
 # Nucleus: Media
 
-Nucleus: Media is a C game development library for Windows.
+Nucleus: Media is a C game development library for Windows and Linux.
+*Apple operating systems are currently not supported as Apple deprecated OpenGL in favor of Metal.
+Due to time constraints Metal and consequently Apple operating sytems can not be supported in the near future.*
 
 Nucleus: Media is made available publicly under the
 [MIT license](https://github.com/primordialmachine/nucleus-media/blob/master/LICENSE.md)

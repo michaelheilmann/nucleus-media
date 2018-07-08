@@ -2,8 +2,16 @@
 #include "Nucleus.Media.Plugin.OpenAL/AudioSystemFactory.h"
 #include "Nucleus.Media.Plugin.OpenAL/AudioSystem.h"
 
+#if (Nucleus_OperatingSystem == Nucleus_OperatingSystem_LINUX) || \
+    (Nucleus_OperatingSystem == Nucleus_OperatingSystem_CYGWIN) 
+
+#include "Nucleus.Media.Plugin.OpenAL/getAudioSystemConfigurations.h"
+
+#endif
+
+
 Nucleus_ClassTypeDefinition(Nucleus_Media_Plugin_OpenAL_Export,
-                            "Nucleus.Media.Plugin.OpenAL.AudioSystemFactory",
+                            u8"Nucleus.Media.Plugin.OpenAL.AudioSystemFactory",
                             Nucleus_Media_Plugin_OpenAL_AudioSystemFactory,
                             Nucleus_Media_AudioSystemFactory)
 
@@ -21,6 +29,13 @@ createSystem
         Nucleus_Media_Plugin_OpenAL_AudioSystemFactory *self,
         Nucleus_Media_AudioSystem **system
     );
+
+Nucleus_NonNull() static Nucleus_Status
+getConfigurations
+    (
+        Nucleus_Media_Plugin_OpenAL_AudioSystemFactory *self,
+        Nucleus_ObjectArray **configurations
+    );
     
 Nucleus_NonNull() static Nucleus_Status
 constructDispatch
@@ -30,6 +45,7 @@ constructDispatch
 {
     NUCLEUS_MEDIA_AUDIOSYSTEMFACTORY_CLASS(dispatch)->createSystem = (Nucleus_Status(*)(Nucleus_Media_AudioSystemFactory *, Nucleus_Media_AudioSystem **))&createSystem;
     NUCLEUS_MEDIA_AUDIOSYSTEMFACTORY_CLASS(dispatch)->getSystemName = (Nucleus_Status(*)(Nucleus_Media_AudioSystemFactory *, Nucleus_String **))&getSystemName;
+    NUCLEUS_MEDIA_AUDIOSYSTEMFACTORY_CLASS(dispatch)->getConfigurations = (Nucleus_Status(*)(Nucleus_Media_AudioSystemFactory *, Nucleus_ObjectArray **))&getConfigurations;
     return Nucleus_Status_Success;
 }
 
@@ -73,6 +89,36 @@ createSystem
 {
     if (Nucleus_Unlikely(!self || !system)) return Nucleus_Status_InvalidArgument;
     return Nucleus_Media_Plugin_OpenAL_AudioSystem_create((Nucleus_Media_Plugin_OpenAL_AudioSystem **)system);
+}
+
+Nucleus_NonNull() static Nucleus_Status
+getConfigurations
+    (
+        Nucleus_Media_Plugin_OpenAL_AudioSystemFactory *self,
+        Nucleus_ObjectArray **configurations
+    )
+{
+    if (Nucleus_Unlikely(!self || !configurations)) return Nucleus_Status_InvalidArgument;
+    //
+    Nucleus_Status status;
+    Nucleus_ObjectArray *temporary;
+    //
+    status = Nucleus_ObjectArray_create(&temporary);
+    if (Nucleus_Unlikely(status))
+    {
+        return status;
+    }
+    //
+    status = getAudioSystemConfigurations(temporary);
+    if (Nucleus_Unlikely(status))
+    {
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(temporary));
+        return status;
+    }
+    //
+    *configurations = temporary;
+    //
+    return Nucleus_Status_Success;
 }
 
 Nucleus_NonNull() Nucleus_Status

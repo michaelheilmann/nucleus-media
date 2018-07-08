@@ -3,6 +3,9 @@
 
 #include "Nucleus/Media/AudioSystem.h"
 
+#include <AL/al.h>
+#include <AL/alc.h>
+
 #define Nucleus_Media_Plugin_OpenAL_Export
 Nucleus_ClassTypeDeclaration(Nucleus_Media_Plugin_OpenAL_Export,
                              u8"Nucleus.Media.Plugin.OpenAL.AudioSystem",
@@ -15,6 +18,7 @@ struct Nucleus_Media_Plugin_OpenAL_AudioSystem
 {
     Nucleus_Media_AudioSystem parent;
     Nucleus_String *systemName;
+    ALCdevice *device;
 }; // struct Nucleus_Media_Plugin_OpenAL_AudioSystem
 
 struct Nucleus_Media_Plugin_OpenAL_AudioSystem_Class

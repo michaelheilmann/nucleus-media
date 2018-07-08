@@ -88,7 +88,7 @@ main
     int exitCode = EXIT_SUCCESS;
     Nucleus_Status status;
     
-    status = Nucleus_Types_initialize();
+    status = Nucleus_Objects_initialize();
     if (Nucleus_Unlikely(status)) { return EXIT_FAILURE; }
 
     status = testApplicationEvent();
@@ -104,6 +104,6 @@ main
     if (Nucleus_Unlikely(status)) { exitCode = EXIT_FAILURE; goto End; }
 
 End:
-    Nucleus_Types_uninitialize();
+    Nucleus_Objects_uninitialize();
     return exitCode;
 }
