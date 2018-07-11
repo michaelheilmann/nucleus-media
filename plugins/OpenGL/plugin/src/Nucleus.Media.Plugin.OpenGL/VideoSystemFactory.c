@@ -5,18 +5,22 @@
 #if (Nucleus_OperatingSystem == Nucleus_OperatingSystem_LINUX) || \
     (Nucleus_OperatingSystem == Nucleus_OperatingSystem_CYGWIN) 
 
-#include "Nucleus.Media.Plugin.OpenGL/GLX/getVideoSystemConfigurations.h"
+    #include "Nucleus.Media.Plugin.OpenGL/GLX/getVideoSystemConfigurations.h"
+    #include "Nucleus.Media.Plugin.OpenGL/GLX/VideoSystem.h"
 
 #elif (Nucleus_OperatingSystem == Nucleus_OperatingSystem_WINDOWS)
 
-#include "Nucleus.Media.Plugin.OpenGL/WGL/getVideoSystemConfigurations.h"
+    #include "Nucleus.Media.Plugin.OpenGL/WGL/getVideoSystemConfigurations.h"
+    #include "Nucleus.Media.Plugin.OpenGL/WGL/VideoSystem.h"
 
 #else
+
     #error("environment not supported)
+
 #endif
 
 Nucleus_ClassTypeDefinition(Nucleus_Media_Plugin_OpenGL_Export,
-                            "Nucleus.Media.Plugin.OpenGL.VideoSystemFactory",
+                            u8"Nucleus.Media.Plugin.OpenGL.VideoSystemFactory",
                             Nucleus_Media_Plugin_OpenGL_VideoSystemFactory,
                             Nucleus_Media_VideoSystemFactory)
 
@@ -88,7 +92,14 @@ createSystem
     )
 {
     if (Nucleus_Unlikely(!self || !system)) return Nucleus_Status_InvalidArgument;
-    return Nucleus_Media_Plugin_OpenGL_VideoSystem_create((Nucleus_Media_Plugin_OpenGL_VideoSystem **)system);
+#if (Nucleus_OperatingSystem == Nucleus_OperatingSystem_LINUX) || \
+    (Nucleus_OperatingSystem == Nucleus_OperatingSystem_CYGWIN) 
+    return Nucleus_Media_Plugin_OpenGL_GLX_VideoSystem_create((Nucleus_Media_Plugin_OpenGL_GLX_VideoSystem **)system);
+#elif (Nucleus_OperatingSystem == Nucleus_OperatingSystem_WINDOWS)
+    return Nucleus_Media_Plugin_OpenGL_WGL_VideoSystem_create((Nucleus_Media_Plugin_OpenGL_WGL_VideoSystem **)system);
+#else
+    #error("environment not supported)
+#endif
 }
 
 Nucleus_NonNull() static Nucleus_Status

@@ -1,56 +1,122 @@
 // Copyright (c) 2018 Michael Heilmann
 #include "Nucleus/Media/Context-private.c.i"
 
-Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_get
-   (
-      Nucleus_MediaContext **mediaContext
-   )
-{
-   if (Nucleus_Unlikely(!mediaContext))
-   { return Nucleus_Status_InvalidArgument; }
-   // lock
-   if (Nucleus_Unlikely(!g_singleton))
-   {
-       // unlock
-       return Nucleus_Status_NotExists;
-   }
-   *mediaContext = g_singleton;
-   // unlock
-   return Nucleus_Status_Success;
-}
+Nucleus_ClassTypeDefinition(Nucleus_Media_Library_Export,
+                            u8"Nucleus.Media.Context",
+                            Nucleus_Media_Context,
+                            Nucleus_Object)
 
-Nucleus_Status
-Nucleus_MediaContext_initialize
+Nucleus_NonNull() static Nucleus_Status
+constructDispatch
     (
+        Nucleus_Media_Context_Class *dispatch
     )
 {
-    if (NULL != g_singleton)
-    {
-        return Nucleus_Status_Exists;
-    }
-    return create(&g_singleton);
+    return Nucleus_Status_Success;
 }
 
-Nucleus_Status
-Nucleus_MediaContext_uninitialize
+Nucleus_NonNull() static Nucleus_Status
+constructSignals
     (
+        Nucleus_Media_Context_Class *dispatch
     )
 {
-    if (NULL == g_singleton)
+    return Nucleus_Status_Success;
+}
+
+Nucleus_NonNull() static Nucleus_Status
+destruct
+    (
+        Nucleus_Media_Context *self
+    )
+{
+    //
+    if (self->videoSystem)
     {
-        return Nucleus_Status_NotExists;
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(self->videoSystem));
+        self->videoSystem = NULL;
     }
-    Nucleus_MediaContext_shutdown(g_singleton);
-    destroy(g_singleton);
-    g_singleton = NULL;
+    if (self->audioSystem)
+    {
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(self->audioSystem));
+        self->audioSystem = NULL;
+    }
+    //
+    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(self->audioSystemFactories));
+    self->audioSystemFactories = NULL;
+    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(self->videoSystemFactories));
+    self->videoSystemFactories = NULL;
+    //
+    Nucleus_Collections_PointerHashMap_uninitialize(&self->plugins);
+    //
     return Nucleus_Status_Success;
 }
 
 Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_registerAudioSystemFactory
+Nucleus_Media_Context_construct
     (
-        Nucleus_MediaContext *context,
+        Nucleus_Media_Context *self
+    )
+{
+    if (Nucleus_Unlikely(!self))
+    {
+        return Nucleus_Status_InvalidArgument;
+    }
+    Nucleus_Status status;
+    Nucleus_Type *type;
+    status = Nucleus_Media_Context_getType(&type);
+    if (Nucleus_Unlikely(status))
+    {
+        return status;
+    }
+    status = Nucleus_Object_construct(NUCLEUS_OBJECT(self));
+    if (Nucleus_Unlikely(status))
+    {
+        return status;
+    }
+    // No video system or audio system selected.
+    self->videoSystem = NULL;
+    self->audioSystem = NULL;
+    //
+    status = Nucleus_Collections_PointerHashMap_initialize(&self->plugins,
+                                                           0,
+                                                           NUCLEUS_LOCKFUNCTION(&Nucleus_Object_incrementReferenceCount),
+                                                           NUCLEUS_UNLOCKFUNCTION(&Nucleus_Object_decrementReferenceCount),
+                                                           NUCLEUS_HASHFUNCTION(&Nucleus_Object_hash),
+                                                           NUCLEUS_EQUALTOFUNCTION(&Nucleus_Object_equalTo),
+                                                           NUCLEUS_LOCKFUNCTION(&Nucleus_Object_incrementReferenceCount),
+                                                           NUCLEUS_UNLOCKFUNCTION(&Nucleus_Object_decrementReferenceCount));
+    if (Nucleus_Unlikely(status))
+    {
+        return status;
+    }
+    //
+    status = Nucleus_ObjectArray_create(&self->videoSystemFactories);
+    if (Nucleus_Unlikely(status))
+    {
+        Nucleus_Collections_PointerHashMap_uninitialize(&self->plugins);
+        return status;
+    }
+    //
+    status = Nucleus_ObjectArray_create(&self->audioSystemFactories);
+    if (Nucleus_Unlikely(status))
+    {
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(self->videoSystemFactories));
+        self->videoSystemFactories = NULL;
+        Nucleus_Collections_PointerHashMap_uninitialize(&self->plugins);
+        return status;
+    }
+    //
+    NUCLEUS_OBJECT(self)->type = type;
+    return Nucleus_Status_Success;
+}
+
+Nucleus_DeclareSingletonCreate(Nucleus_Media_Context)
+
+Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_Context_registerAudioSystemFactory
+    (
+        Nucleus_Media_Context *context,
         Nucleus_Media_AudioSystemFactory *audioSystemFactory
     )
 {
@@ -59,20 +125,20 @@ Nucleus_MediaContext_registerAudioSystemFactory
 }
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_getAudioSystemFactories
+Nucleus_Media_Context_getAudioSystemFactories
     (
-        Nucleus_MediaContext *mediaContext,
+        Nucleus_Media_Context *context,
         Nucleus_ObjectEnumerator **enumerator
     )
 {
-    if (Nucleus_Unlikely(!mediaContext || !enumerator)) return Nucleus_Status_InvalidArgument;
-    return Nucleus_ObjectArray_getEnumerator(mediaContext->audioSystemFactories, enumerator);
+    if (Nucleus_Unlikely(!context || !enumerator)) return Nucleus_Status_InvalidArgument;
+    return Nucleus_ObjectArray_getEnumerator(context->audioSystemFactories, enumerator);
 }
 
 Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_registerVideoSystemFactory
+Nucleus_Media_Context_registerVideoSystemFactory
     (
-        Nucleus_MediaContext *context,
+        Nucleus_Media_Context *context,
         Nucleus_Media_VideoSystemFactory *videoSystemFactory
     )
 {
@@ -81,20 +147,20 @@ Nucleus_MediaContext_registerVideoSystemFactory
 }
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_getVideoSystemFactories
+Nucleus_Media_Context_getVideoSystemFactories
     (
-        Nucleus_MediaContext *mediaContext,
+        Nucleus_Media_Context *context,
         Nucleus_ObjectEnumerator **enumerator  
     )
 {
-    if (Nucleus_Unlikely(!mediaContext || !enumerator)) return Nucleus_Status_InvalidArgument;
-    return Nucleus_ObjectArray_getEnumerator(mediaContext->videoSystemFactories, enumerator);
+    if (Nucleus_Unlikely(!context || !enumerator)) return Nucleus_Status_InvalidArgument;
+    return Nucleus_ObjectArray_getEnumerator(context->videoSystemFactories, enumerator);
 }
 
 Nucleus_NonNull(1) Nucleus_Status
-Nucleus_MediaContext_startup
+Nucleus_Media_Context_startup
     (
-        Nucleus_MediaContext *context,
+        Nucleus_Media_Context *context,
         Nucleus_Status(*selectVideoSystemFactory)(Nucleus_Media_VideoSystemFactory **factory),
         Nucleus_Status(*selectVideoSystemConfiguration)(Nucleus_ObjectEnumerator *enumerator,
                                                         Nucleus_Media_VideoSystemConfiguration **configuration),
@@ -105,13 +171,13 @@ Nucleus_MediaContext_startup
 {
     Nucleus_Status status;
     //
-    status = Nucleus_MediaContext_loadPluginLibraries(context);
+    status = Nucleus_Media_Context_loadPluginLibraries(context);
     if (Nucleus_Unlikely(status)) return status;
     //
-    status = Nucleus_MediaContext_registerPlugins(context);
+    status = Nucleus_Media_Context_registerPlugins(context);
     if (Nucleus_Unlikely(status)) return status;
     //
-    status = Nucleus_MediaContext_startupPlugins(context);
+    status = Nucleus_Media_Context_startupPlugins(context);
     if (Nucleus_Unlikely(status)) return status;
     //
     if (!selectVideoSystemFactory)
@@ -249,9 +315,9 @@ Nucleus_MediaContext_startup
 }
 
 Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_shutdown
+Nucleus_Media_Context_shutdown
     (
-        Nucleus_MediaContext *context
+        Nucleus_Media_Context *context
     )
 {
     if (context->audioSystem)
@@ -265,9 +331,37 @@ Nucleus_MediaContext_shutdown
         context->videoSystem = NULL;
     }
     //
-    Nucleus_MediaContext_shutdownPlugins(context);
+    Nucleus_Media_Context_shutdownPlugins(context);
     //
-    Nucleus_MediaContext_unregisterPlugins(context);
+    Nucleus_Media_Context_unregisterPlugins(context);
     //
     return Nucleus_Status_Success;
 }
+
+Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_Context_getVideoSystem
+    (
+        Nucleus_Media_Context *context,
+        Nucleus_Media_VideoSystem **videoSystem
+    )
+{
+    if (Nucleus_Unlikely(!context || !videoSystem)) return Nucleus_Status_InvalidArgument;
+    Nucleus_Object_incrementReferenceCount(NUCLEUS_OBJECT(context->videoSystem));
+    *videoSystem = context->videoSystem;
+    return Nucleus_Status_Success;
+}
+
+Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_Context_getAudioSystem
+    (
+        Nucleus_Media_Context *context,
+        Nucleus_Media_AudioSystem **audioSystem
+    )
+{
+    if (Nucleus_Unlikely(!context || !audioSystem)) return Nucleus_Status_InvalidArgument;
+    Nucleus_Object_incrementReferenceCount(NUCLEUS_OBJECT(context->audioSystem));
+    *audioSystem = context->audioSystem;
+    return Nucleus_Status_Success;
+}
+
+Nucleus_DefineSingletonCreate(Nucleus_Media_Context)

@@ -6,7 +6,7 @@
 #define Nucleus_Media_Plugin_Direct3D_Export
 
 Nucleus_ClassTypeDeclaration(Nucleus_Media_Plugin_Direct3D_Export,
-                             "Nucleus.Media.Plugin.Direct3D.Plugin",
+                             u8"Nucleus.Media.Plugin.Direct3D.Plugin",
                              Nucleus_Media_Plugin_Direct3D_Plugin,
                              Nucleus_Media_Plugin)
 #define NUCLEUS_MEDIA_PLUGIN_DIRECT3D_PLUGIN(p) ((Nucleus_Media_Plugin_Direct3D_Plugin *)(p))

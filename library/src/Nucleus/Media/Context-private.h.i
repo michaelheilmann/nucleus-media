@@ -24,104 +24,62 @@
     #error("operating system not supported")
 #endif
 
-struct Nucleus_MediaContext
-{
-    Nucleus_Collections_PointerHashMap plugins;
-    // List of video system factories.
-    Nucleus_ObjectArray *videoSystemFactories;
-    // List of audio system factories.
-    Nucleus_ObjectArray *audioSystemFactories;
-    // null or selected video system.
-    Nucleus_Media_VideoSystem *videoSystem;
-    // null or selected audio system.
-    Nucleus_Media_AudioSystem *audioSystem;
-}; // struct Nucleus_MediaContext
-
-static Nucleus_MediaContext *g_singleton = NULL;
- 
-// Private to Nucleus_MediaContext extension to Nucleus_DynamicLibraryManager.
+// Private to Nucleus_Media_Context extension to Nucleus_DynamicLibraryManager.
 Nucleus_NonNull() static Nucleus_Status
 loadDynamicallyLoadableLibrary
     (
         const char *dynamicLibraryName
     );
-    
-// Private to Nucleus_MediaContext extension to Nucleus_DynamicLibraryManager.
+
 static Nucleus_Status
 loadDynamicLoadableLibraries
     (
     );
 
-// Private to Nucleus_MediaContext extension to Nucleus_PluginManager.
-
-Nucleus_NonNull() static Nucleus_Status
-initialize
+Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
+Nucleus_Media_Context_unregisterFactories
     (
-        Nucleus_MediaContext *mediaContext
-    );
-
-Nucleus_NonNull() static Nucleus_Status
-uninitialize
-    (
-        Nucleus_MediaContext *mediaContext
-    );
-
-Nucleus_NonNull() static Nucleus_Status
-create
-    (
-        Nucleus_MediaContext **mediaContext
-    );
-
-Nucleus_NonNull() static Nucleus_Status
-destroy
-    (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     );
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_unregisterFactories
+Nucleus_Media_Context_startupPlugins
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     );
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_startupPlugins
+Nucleus_Media_Context_shutdownPlugins
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     );
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_shutdownPlugins
+Nucleus_Media_Context_startupPlugins
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     );
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_startupPlugins
+Nucleus_Media_Context_shutdownPlugins
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     );
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_shutdownPlugins
+Nucleus_Media_Context_registerPlugins
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     );
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_registerPlugins
+Nucleus_Media_Context_unregisterPlugins
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     );
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_unregisterPlugins
+Nucleus_Media_Context_loadPluginLibraries
     (
-        Nucleus_MediaContext *mediaContext
-    );
-
-Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_loadPluginLibraries
-    (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     );

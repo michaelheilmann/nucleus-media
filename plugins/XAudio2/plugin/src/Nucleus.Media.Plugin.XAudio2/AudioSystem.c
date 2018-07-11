@@ -52,4 +52,4 @@ Nucleus_Media_Plugin_XAudio2_AudioSystem_construct
     return Nucleus_Status_Success;
 }
 
-Nucleus_DefineDefaultCreate(Nucleus_Media_Plugin_XAudio2_AudioSystem)
+Nucleus_DefineSingletonCreate(Nucleus_Media_Plugin_XAudio2_AudioSystem)

@@ -1,5 +1,7 @@
 // Copyright (c) 2018 Michael Heilmann
 #include "Nucleus/Media/Context-private.h.i"
+#include "Nucleus/C/strcpy.h"
+#include "Nucleus/C/strcat.h"
 
 Nucleus_NonNull() static Nucleus_Status
 loadDynamicallyLoadableLibrary
@@ -34,10 +36,10 @@ loadDynamicallyLoadableLibrary
         Nucleus_deallocateMemory(dynamicLibrarySearchPathPathname);
         return status;
     }
-    strcpy(dynamicLibraryPathname, dynamicLibrarySearchPathPathname);
-    strcat(dynamicLibraryPathname, dynamicLibraryFilename);
-    strcat(dynamicLibraryPathname, ".");
-    strcat(dynamicLibraryPathname, dllExtension);
+    C_strcpy(dynamicLibraryPathname, dynamicLibrarySearchPathPathname);
+    C_strcat(dynamicLibraryPathname, dynamicLibraryFilename);
+    C_strcat(dynamicLibraryPathname, ".");
+    C_strcat(dynamicLibraryPathname, dllExtension);
     Nucleus_deallocateMemory(dynamicLibrarySearchPathPathname);
     
     // Load the DLL.
@@ -93,135 +95,14 @@ loadDynamicLoadableLibraries
     return Nucleus_Status_Success;
 }
 
-Nucleus_NonNull() static Nucleus_Status
-initialize
-    (
-        Nucleus_MediaContext *mediaContext
-    )
-{
-    //
-    if (Nucleus_Unlikely(!mediaContext))
-    {
-        return Nucleus_Status_InvalidArgument;
-    }
-    //
-    Nucleus_Status status;
-    //
-    status = Nucleus_Objects_initialize();
-    if (Nucleus_Unlikely(status))
-    {
-        return status; 
-    }
-    // No video system or audio system selected.
-    mediaContext->videoSystem = NULL;
-    mediaContext->audioSystem = NULL;
-    //
-    //
-    status = Nucleus_Collections_PointerHashMap_initialize(&mediaContext->plugins,
-                                                           0,
-                                                           NUCLEUS_LOCKFUNCTION(&Nucleus_Object_incrementReferenceCount),
-                                                           NUCLEUS_UNLOCKFUNCTION(&Nucleus_Object_decrementReferenceCount),
-                                                           NUCLEUS_HASHFUNCTION(&Nucleus_Object_hash),
-                                                           NUCLEUS_EQUALTOFUNCTION(&Nucleus_Object_equalTo),
-                                                           NUCLEUS_LOCKFUNCTION(&Nucleus_Object_incrementReferenceCount),
-                                                           NUCLEUS_UNLOCKFUNCTION(&Nucleus_Object_decrementReferenceCount));
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_Types_uninitialize();
-        return status;
-    }
-    //
-    status = Nucleus_ObjectArray_create(&mediaContext->videoSystemFactories);
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_Collections_PointerHashMap_uninitialize(&mediaContext->plugins);
-        Nucleus_Types_uninitialize();
-        return status;
-    }
-    //
-    status = Nucleus_ObjectArray_create(&mediaContext->audioSystemFactories);
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->videoSystemFactories));
-        mediaContext->videoSystemFactories = NULL;
-        Nucleus_Collections_PointerHashMap_uninitialize(&mediaContext->plugins);
-        Nucleus_Types_uninitialize();
-        return status;
-    }
-    return Nucleus_Status_Success;
-}
-
-Nucleus_NonNull() static Nucleus_Status
-uninitialize
-    (
-        Nucleus_MediaContext *mediaContext
-    )
-{
-    //
-    if (mediaContext->videoSystem)
-    {
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->videoSystem));
-        mediaContext->videoSystem = NULL;
-    }
-    if (mediaContext->audioSystem)
-    {
-        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->audioSystem));
-        mediaContext->audioSystem = NULL;
-    }
-    //
-    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->audioSystemFactories));
-    mediaContext->audioSystemFactories = NULL;
-    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(mediaContext->videoSystemFactories));
-    mediaContext->videoSystemFactories = NULL;
-    //
-    Nucleus_Collections_PointerHashMap_uninitialize(&mediaContext->plugins);
-    //
-    Nucleus_Objects_uninitialize();
-    //
-    return Nucleus_Status_Success;
-}
-
-Nucleus_NonNull() static Nucleus_Status
-create
-    (
-        Nucleus_MediaContext **mediaContext
-    )
-{
-    if (Nucleus_Unlikely(!mediaContext)) return Nucleus_Status_InvalidArgument;
-    Nucleus_Status status;
-    Nucleus_MediaContext *temporary;
-    status = Nucleus_allocateMemory((void **)&temporary, sizeof(Nucleus_MediaContext));
-    if (Nucleus_Unlikely(status)) return status;
-    status = initialize(temporary);
-    if (Nucleus_Unlikely(status))
-    {
-        Nucleus_deallocateMemory(temporary);
-        return status;
-    }
-    *mediaContext = temporary;
-    return Nucleus_Status_Success;
-}
-
-Nucleus_NonNull() static Nucleus_Status
-destroy
-    (
-        Nucleus_MediaContext *mediaContext
-    )
-{
-    if (Nucleus_Unlikely(!mediaContext)) return Nucleus_Status_InvalidArgument;
-    uninitialize(mediaContext);
-    Nucleus_deallocateMemory(mediaContext);
-    return Nucleus_Status_Success;
-}
-
 Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_loadPluginLibraries
+Nucleus_Media_Context_loadPluginLibraries
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     )
 {
     //
-    if (Nucleus_Unlikely(!mediaContext)) return Nucleus_Status_InvalidArgument;
+    if (Nucleus_Unlikely(!context)) return Nucleus_Status_InvalidArgument;
     //
     Nucleus_Status status;
     status = loadDynamicLoadableLibraries();
@@ -231,9 +112,9 @@ Nucleus_MediaContext_loadPluginLibraries
 }
 
 Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_registerPlugins
+Nucleus_Media_Context_registerPlugins
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     )
 {
     Nucleus_Status status;
@@ -268,7 +149,7 @@ Nucleus_MediaContext_registerPlugins
             Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(plugin));
             return status;
         }
-        status = Nucleus_Collections_PointerHashMap_set(&mediaContext->plugins,
+        status = Nucleus_Collections_PointerHashMap_set(&context->plugins,
                                                         pluginName,
                                                         plugin,
                                                         Nucleus_Boolean_False);
@@ -296,15 +177,15 @@ Nucleus_MediaContext_registerPlugins
 }
 
 Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_startupPlugins
+Nucleus_Media_Context_startupPlugins
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     )
 {
-    if (Nucleus_Unlikely(!mediaContext)) return Nucleus_Status_InvalidArgument;
+    if (Nucleus_Unlikely(!context)) return Nucleus_Status_InvalidArgument;
     Nucleus_Status status;
     Nucleus_Collections_PointerHashMap_ConstantEnumerator e;
-    status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_initialize(&e, &mediaContext->plugins);
+    status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_initialize(&e, &context->plugins);
     if (Nucleus_Unlikely(status)) return status;
     while (Nucleus_Boolean_True)
     {
@@ -314,8 +195,8 @@ Nucleus_MediaContext_startupPlugins
         if (Nucleus_Unlikely(status))
         {
             Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
-            Nucleus_MediaContext_unregisterFactories(mediaContext);
-            Nucleus_MediaContext_shutdownPlugins(mediaContext);
+            Nucleus_Media_Context_unregisterFactories(context);
+            Nucleus_Media_Context_shutdownPlugins(context);
             return status;
         }
         if (!hasValue)
@@ -330,8 +211,8 @@ Nucleus_MediaContext_startupPlugins
         if (Nucleus_Unlikely(status))
         {
             Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
-            Nucleus_MediaContext_unregisterFactories(mediaContext);
-            Nucleus_MediaContext_shutdownPlugins(mediaContext);
+            Nucleus_Media_Context_unregisterFactories(context);
+            Nucleus_Media_Context_shutdownPlugins(context);
             return status;
         }
         //
@@ -339,8 +220,8 @@ Nucleus_MediaContext_startupPlugins
         if (Nucleus_Unlikely(status))
         {
             Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
-            Nucleus_MediaContext_unregisterFactories(mediaContext);
-            Nucleus_MediaContext_shutdownPlugins(mediaContext);
+            Nucleus_Media_Context_unregisterFactories(context);
+            Nucleus_Media_Context_shutdownPlugins(context);
             return status;
         }
         //
@@ -348,8 +229,8 @@ Nucleus_MediaContext_startupPlugins
         if (Nucleus_Unlikely(status))
         {
             Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
-            Nucleus_MediaContext_unregisterFactories(mediaContext);
-            Nucleus_MediaContext_shutdownPlugins(mediaContext);
+            Nucleus_Media_Context_unregisterFactories(context);
+            Nucleus_Media_Context_shutdownPlugins(context);
             return status;
         }
     }
@@ -358,15 +239,15 @@ Nucleus_MediaContext_startupPlugins
 }
 
 Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_shutdownPlugins
+Nucleus_Media_Context_shutdownPlugins
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     )
 {
-    if (Nucleus_Unlikely(!mediaContext)) return Nucleus_Status_InvalidArgument;
+    if (Nucleus_Unlikely(!context)) return Nucleus_Status_InvalidArgument;
     Nucleus_Status status;
     Nucleus_Collections_PointerHashMap_ConstantEnumerator e;
-    status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_initialize(&e, &mediaContext->plugins);
+    status = Nucleus_Collections_PointerHashMap_ConstantEnumerator_initialize(&e, &context->plugins);
     if (Nucleus_Unlikely(status)) return status;
     while (Nucleus_Boolean_True)
     {
@@ -404,7 +285,7 @@ Nucleus_MediaContext_shutdownPlugins
         if (Nucleus_Unlikely(status))
         {
             Nucleus_Collections_PointerHashMap_ConstantEnumerator_uninitialize(&e);
-            Nucleus_MediaContext_shutdownPlugins(mediaContext);
+            Nucleus_Media_Context_shutdownPlugins(context);
             return status;
         }
     }
@@ -413,22 +294,22 @@ Nucleus_MediaContext_shutdownPlugins
 }
 
 Nucleus_Media_Library_Export Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_unregisterFactories
+Nucleus_Media_Context_unregisterFactories
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     )
 {
-    Nucleus_ObjectArray_clear(mediaContext->audioSystemFactories);
-    Nucleus_ObjectArray_clear(mediaContext->videoSystemFactories);
+    Nucleus_ObjectArray_clear(context->audioSystemFactories);
+    Nucleus_ObjectArray_clear(context->videoSystemFactories);
     return Nucleus_Status_Success;
 }
 
 Nucleus_NonNull() Nucleus_Status
-Nucleus_MediaContext_unregisterPlugins
+Nucleus_Media_Context_unregisterPlugins
     (
-        Nucleus_MediaContext *mediaContext
+        Nucleus_Media_Context *context
     )
 {
-    Nucleus_Collections_PointerHashMap_clear(&mediaContext->plugins);
+    Nucleus_Collections_PointerHashMap_clear(&context->plugins);
     return Nucleus_Status_Success;
 }

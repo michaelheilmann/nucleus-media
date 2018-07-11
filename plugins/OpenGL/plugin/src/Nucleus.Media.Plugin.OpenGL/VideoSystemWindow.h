@@ -8,8 +8,8 @@ Nucleus_ClassTypeDeclaration(Nucleus_Media_Plugin_OpenGL_Export,
                              u8"Nucleus.Media.Plugin.OpenGL.VideoSystemWindow",
                              Nucleus_Media_Plugin_OpenGL_VideoSystemWindow,
                              Nucleus_Media_VideoSystemWindow)
-#define NUCLEUS_MEDIA_PLUGIN_OPENGL_VIDEOSYSTEMWINDOW(p) ((Nucleus_Media_Plugin_OpenGL_VideoSystem *)(p))
-#define NUCLEUS_MEDIA_PLUGIN_OPENGL_VIDEOSYSTEMWINDOW_CLASS(p) ((Nucleus_Media_Plugin_OpenGL_VideoSystem_Class *)(p))
+#define NUCLEUS_MEDIA_PLUGIN_OPENGL_VIDEOSYSTEMWINDOW(p) ((Nucleus_Media_Plugin_OpenGL_VideoSystemWindow *)(p))
+#define NUCLEUS_MEDIA_PLUGIN_OPENGL_VIDEOSYSTEMWINDOW_CLASS(p) ((Nucleus_Media_Plugin_OpenGL_VideoSystemWindow_Class *)(p))
 
 struct Nucleus_Media_Plugin_OpenGL_VideoSystemWindow
 {

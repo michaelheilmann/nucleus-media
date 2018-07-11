@@ -32,9 +32,3 @@ Nucleus_Media_Plugin_OpenGL_VideoSystem_construct
     (
         Nucleus_Media_Plugin_OpenGL_VideoSystem *self
     );
-
-Nucleus_NonNull() Nucleus_Status
-Nucleus_Media_Plugin_OpenGL_VideoSystem_create
-    (
-        Nucleus_Media_Plugin_OpenGL_VideoSystem **audioSystem
-    );

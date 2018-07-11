@@ -78,7 +78,7 @@ Nucleus_Media_VideoSystemFactory_getConfigurations
     (
         Nucleus_Media_VideoSystemFactory *self,
         Nucleus_ObjectArray **configurations
-	)
+    )
 {
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
     return getDispatch(self)->getConfigurations(self, configurations);

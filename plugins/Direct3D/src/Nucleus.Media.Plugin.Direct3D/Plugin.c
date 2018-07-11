@@ -36,18 +36,23 @@ startup
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
     Nucleus_Status status;
     //
-    Nucleus_MediaContext *context;
-    status = Nucleus_MediaContext_get(&context);
+    Nucleus_Media_Context *context;
+    status = Nucleus_Media_Context_create(&context);
     if (Nucleus_Unlikely(status)) return status;
     //
     Nucleus_Media_Plugin_Direct3D_VideoSystemFactory *factory;
     status = Nucleus_Media_Plugin_Direct3D_VideoSystemFactory_create(&factory);
-    if (Nucleus_Unlikely(status)) return status;
+    if (Nucleus_Unlikely(status))
+    {
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(context));
+        return status;
+    }
     //
-    status = Nucleus_MediaContext_registerVideoSystemFactory(context, NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY(factory));
+    status = Nucleus_Media_Context_registerVideoSystemFactory(context, NUCLEUS_MEDIA_VIDEOSYSTEMFACTORY(factory));
     Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
     if (Nucleus_Unlikely(status))
     {
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(context));
         return status;
     }
     //

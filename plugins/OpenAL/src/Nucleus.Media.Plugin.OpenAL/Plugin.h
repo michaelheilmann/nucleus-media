@@ -6,11 +6,11 @@
 #define Nucleus_Media_Plugin_OpenAL_Export
 
 Nucleus_ClassTypeDeclaration(Nucleus_Media_Plugin_OpenAL_Export,
-                             "Nucleus.Media.Plugin.OpenAL.Plugin",
+                             u8"Nucleus.Media.Plugin.OpenAL.Plugin",
                              Nucleus_Media_Plugin_OpenAL_Plugin,
                              Nucleus_Media_Plugin)
-#define NUCLEUS_MEDIA_PLUGIN_XAUDIO2_PLUGIN(p) ((Nucleus_Media_Plugin_OpenAL_Plugin *)(p))
-#define NUCLEUS_MEDIA_PLUGIN_XAUDIO2_PLUGIN_CLASS(p) ((Nucleus_Media_Plugin_OpenAL_Plugin_Class *)(p))
+#define NUCLEUS_MEDIA_PLUGIN_OPENAL_PLUGIN(p) ((Nucleus_Media_Plugin_OpenAL_Plugin *)(p))
+#define NUCLEUS_MEDIA_PLUGIN_OPENAL_PLUGIN_CLASS(p) ((Nucleus_Media_Plugin_OpenAL_Plugin_Class *)(p))
 
 struct Nucleus_Media_Plugin_OpenAL_Plugin
 {

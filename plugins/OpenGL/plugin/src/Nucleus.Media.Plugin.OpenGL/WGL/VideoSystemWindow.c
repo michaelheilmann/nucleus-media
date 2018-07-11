@@ -1,35 +1,36 @@
 // Copyright (c) 2018 Michael Heilmann
-#include "Nucleus.Media.Plugin.Direct3D/VideoSystemWindow.h"
-#include "Nucleus.Media.Plugin.Direct3D/VideoSystem.h"
+#include "Nucleus.Media.Plugin.OpenGL/WGL/VideoSystemWindow.h"
 
-Nucleus_ClassTypeDefinition(Nucleus_Media_Plugin_Direct3D_Export,
-                            u8"Nucleus.Media.Plugin.Direct3D.VideoSystemWindow",
-                            Nucleus_Media_Plugin_Direct3D_VideoSystemWindow,
-                            Nucleus_Media_VideoSystemWindow)
+#if (Nucleus_OperatingSystem == Nucleus_OperatingSystem_WINDOWS)
+
+Nucleus_ClassTypeDefinition(Nucleus_Media_Plugin_OpenGL_Export,
+                            u8"Nucleus.Media.Plugin.OpenGL.WGL.VideoSystemWindow",
+                            Nucleus_Media_Plugin_OpenGL_WGL_VideoSystemWindow,
+                            Nucleus_Media_Plugin_OpenGL_VideoSystemWindow)
     
 Nucleus_NonNull() static Nucleus_Status
 constructDispatch
     (
-        Nucleus_Media_Plugin_Direct3D_VideoSystemWindow_Class *dispatch
+        Nucleus_Media_Plugin_OpenGL_WGL_VideoSystemWindow_Class *dispatch
     )
 { return Nucleus_Status_Success; }
 
 Nucleus_NonNull() static Nucleus_Status
 constructSignals
     (
-        Nucleus_Media_Plugin_Direct3D_VideoSystemWindow_Class *dispatch
+        Nucleus_Media_Plugin_OpenGL_WGL_VideoSystemWindow_Class *dispatch
     )
 { return Nucleus_Status_Success; }
 
 Nucleus_AlwaysSucceed() Nucleus_NonNull() static Nucleus_Status
 destruct
     (
-        Nucleus_Media_Plugin_Direct3D_VideoSystemWindow *self
+        Nucleus_Media_Plugin_OpenGL_WGL_VideoSystemWindow *self
     )
 {
     Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(self->videoSystem));
     self->videoSystem = NULL;
-    return Nucleus_Status_Success; 
+    return Nucleus_Status_Success;
 }
 
 static LRESULT CALLBACK
@@ -50,22 +51,21 @@ WindowProcedure
 }
 
 Nucleus_NonNull() Nucleus_Status
-Nucleus_Media_Plugin_Direct3D_VideoSystemWindow_construct
+Nucleus_Media_Plugin_OpenGL_WGL_VideoSystemWindow_construct
     (
-        Nucleus_Media_Plugin_Direct3D_VideoSystemWindow *self,
-        Nucleus_Media_Plugin_Direct3D_VideoSystem *videoSystem
+        Nucleus_Media_Plugin_OpenGL_WGL_VideoSystemWindow *self,
+        Nucleus_Media_Plugin_OpenGL_WGL_VideoSystem *videoSystem
     )
 {
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
     Nucleus_Type *type;
     Nucleus_Status status;
-    status = Nucleus_Media_Plugin_Direct3D_VideoSystemWindow_getType(&type);
+    status = Nucleus_Media_Plugin_OpenGL_WGL_VideoSystemWindow_getType(&type);
     if (Nucleus_Unlikely(status)) return status;
-    status = Nucleus_Media_VideoSystemWindow_construct(NUCLEUS_MEDIA_VIDEOSYSTEMWINDOW(self));
+    status = Nucleus_Media_Plugin_OpenGL_VideoSystemWindow_construct(NUCLEUS_MEDIA_PLUGIN_OPENGL_VIDEOSYSTEMWINDOW(self));
     if (Nucleus_Unlikely(status)) return status;
-    //
     self->videoSystem = videoSystem;
-    Nucleus_Object_incrementReferenceCount(NUCLEUS_OBJECT(self->videoSystem));
+    Nucleus_Object_incrementReferenceCount(NUCLEUS_OBJECT(videoSystem));
     //
     static const LPCSTR TITLE = "Nucleus: Media - Plugin: Direct3D 12 Window";
     static const LPCSTR CLASSNAME = "Nucleus.Media.Plugin.Direct3D.12.Window";
@@ -91,14 +91,14 @@ Nucleus_Media_Plugin_Direct3D_VideoSystemWindow_construct
     }
     // Create window.
     self->hWnd = CreateWindowA(CLASSNAME, // (1) Window class name.
-                               TITLE, // (2) Window title.
-                               WS_CLIPSIBLINGS | WS_CLIPCHILDREN, // (3) Window style.
-                               0, 0, // (4), (5) Left and top position.
-                               1, 1, // (6), (7) Width and height.
-                               NULL, // (8) Parent window handle.
-                               NULL, // (9) Menu handle.
-                               self->hInstance, // (10) Module handle.
-                               NULL); // (11) Creation parameters.
+        TITLE, // (2) Window title.
+        WS_CLIPSIBLINGS | WS_CLIPCHILDREN, // (3) Window style.
+        0, 0, // (4), (5) Left and top position.
+        1, 1, // (6), (7) Width and height.
+        NULL, // (8) Parent window handle.
+        NULL, // (9) Menu handle.
+        self->hInstance, // (10) Module handle.
+        NULL); // (11) Creation parameters.
     if (!self->hWnd)
     {
         fprintf(stderr, "unable to create window\n");
@@ -111,6 +111,8 @@ Nucleus_Media_Plugin_Direct3D_VideoSystemWindow_construct
     return Nucleus_Status_Success;
 }
 
-Nucleus_DefineCreate(Nucleus_Media_Plugin_Direct3D_VideoSystemWindow,
-                     Nucleus_Media_Plugin_Direct3D_VideoSystem *videoSystem,
+Nucleus_DefineCreate(Nucleus_Media_Plugin_OpenGL_WGL_VideoSystemWindow,
+                     Nucleus_Media_Plugin_OpenGL_WGL_VideoSystem *videoSystem,
                      videoSystem)
+
+#endif

@@ -8,7 +8,7 @@ define_static_library(Nucleus.Media Nucleus.Media.Glew ${NUCLEUS_LANGUAGE_ID_C})
 # This requires you to install X11 on Cygwin.
 # TODO: Remove dependency to GLUT.
 find_package(OpenGL REQUIRED)
-target_link_libraries(Nucleus.Media.Glew PRIVATE ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
+target_link_libraries(Nucleus.Media.Glew PRIVATE ${OPENGL_LIBRARIES})
 
 # glew include directory and library
-target_compile_definitions(Nucleus.Media.Glew PUBLIC GLEW_STATIC)
+target_compile_definitions(Nucleus.Media.Glew PUBLIC GLEW_STATIC GLEW_NO_GLU)

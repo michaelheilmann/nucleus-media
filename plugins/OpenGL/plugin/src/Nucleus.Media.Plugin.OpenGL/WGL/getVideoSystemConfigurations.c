@@ -1,3 +1,4 @@
+// Copyright (c) 2018 Michael Heilmann
 #include "Nucleus.Media.Plugin.OpenGL/WGL/getVideoSystemConfigurations.h"
 
 #if (Nucleus_OperatingSystem == Nucleus_OperatingSystem_WINDOWS) 
@@ -8,9 +9,10 @@
 #include <Windows.h>
 #include <WinUser.h>
 
-#include <GL/glew.h>
-#include <GL/wglew.h>
-
+#include <gl/GL.h>
+#include "Nucleus.Media.Plugin.OpenGL/isExtensionSupported.h"
+#include "Nucleus.Media.Plugin.OpenGL/WGL/WGL_ARB_create_context.h"
+#include "Nucleus.Media.Plugin.OpenGL/WGL/WGL_ARB_pixel_format.h"
 #include "Nucleus/Memory.h"
 
 #include "Nucleus/Media/VideoSystemConfiguration.h"
@@ -25,9 +27,10 @@ typedef struct TemporaryWindow
     HGLRC hGLRC;
 } TemporaryWindow;
 
-LRESULT CALLBACK TemporaryWindowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
-
-    switch (message) {
+static LRESULT CALLBACK TemporaryWindowProcedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch (message)
+    {
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
@@ -37,6 +40,7 @@ LRESULT CALLBACK TemporaryWindowProcedure(HWND hWnd, UINT message, WPARAM wParam
 Nucleus_NonNull() static Nucleus_Status
 getConfiguration
     (
+        HDC hDC,
         Nucleus_Media_VideoSystemConfiguration *target,
         int pixelFormatId
     );
@@ -44,10 +48,42 @@ getConfiguration
 Nucleus_NonNull() static Nucleus_Status
 getConfiguration
     (
+        HDC hDC,
         Nucleus_Media_VideoSystemConfiguration *target,
         int pixelFormatId
     )
 {
+    Nucleus_Status status;
+    {
+        const int attributes[] = { WGL_RED_BITS_ARB, WGL_GREEN_BITS_ARB, WGL_BLUE_BITS_ARB, WGL_ALPHA_BITS_ARB };
+        int values[4];
+        if (!wglGetPixelFormatAttribivARB(hDC, pixelFormatId, 1, 4, attributes, values))
+            return Nucleus_Status_EnvironmentFailed;
+        status = Nucleus_Media_VideoSystemConfiguration_setRedBits(target, values[0]);
+        if (Nucleus_Unlikely(status)) return status;
+        status = Nucleus_Media_VideoSystemConfiguration_setGreenBits(target, values[1]);
+        if (Nucleus_Unlikely(status)) return status;
+        status = Nucleus_Media_VideoSystemConfiguration_setBlueBits(target, values[2]);
+        if (Nucleus_Unlikely(status)) return status;
+        status = Nucleus_Media_VideoSystemConfiguration_setAlphaBits(target, values[3]);
+        if (Nucleus_Unlikely(status)) return status;
+    }
+    {
+        const int attributes[] = { WGL_DEPTH_BITS_ARB };
+        int values[1];
+        if (!wglGetPixelFormatAttribivARB(hDC, pixelFormatId, 1, 1, attributes, values))
+            return Nucleus_Status_EnvironmentFailed;
+        status = Nucleus_Media_VideoSystemConfiguration_setDepthBits(target, values[0]);
+        if (Nucleus_Unlikely(status)) return status;
+    }
+    {
+        const int attributes[] = { WGL_STENCIL_BITS_ARB };
+        int values[1];
+        if (!wglGetPixelFormatAttribivARB(hDC, pixelFormatId, 1, 1, attributes, values))
+            return Nucleus_Status_EnvironmentFailed;
+        status = Nucleus_Media_VideoSystemConfiguration_setStencilBits(target, values[0]);
+        if (Nucleus_Unlikely(status)) return status;
+    }
     return Nucleus_Status_Success;
 }
 
@@ -146,27 +182,20 @@ getVideoSystemConfigurations
         status = Nucleus_Status_EnvironmentFailed;
         goto End;
     }
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
+    // Get the WGL_ARB_create_context and WGL_ARB_pixel_format extensions.
+    status = initialize_WGL_ARB_create_context();
+    if (status)
     {
-        fprintf(stderr, "unable to make WGL context current\n");
-        status = Nucleus_Status_EnvironmentFailed;
+        fprintf(stderr, "WGL_ARB_create_context extension is not available\n");
         goto End;
     }
-    static const int attribs[] =
+    status = initialize_WGL_ARB_pixel_format();
+    if (status)
     {
-        WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-        WGL_CONTEXT_MINOR_VERSION_ARB, 1,
-        WGL_CONTEXT_FLAGS_ARB, 0,
-        0
-    };
-    if (wglewIsSupported("WGL_ARB_pixel_format") != 1)
-    {
-        fprintf(stderr, "WGL_ARB_pixel_format not supported\n");
-        status = Nucleus_Status_EnvironmentFailed;
+        fprintf(stderr, "WGL_ARB_pixel_format extension is not available\n");
         goto End;
     }
-    // Get the number of pixel formats.
+    // Get number of pixel formats.
     int numberOfPixelFormats;
     static const int ATTRIBUTES[] = { WGL_NUMBER_PIXEL_FORMATS_ARB };
     if (FALSE == wglGetPixelFormatAttribivARB(window.hDC, 0, 0, 1, ATTRIBUTES, &numberOfPixelFormats))
@@ -183,6 +212,7 @@ getVideoSystemConfigurations
         status = Nucleus_Status_EnvironmentFailed;
         goto End;
     }
+    // Get pixel formats.
     UINT actualNumberOfFormats;
     if (FALSE == wglChoosePixelFormatARB(window.hDC, NULL, NULL, numberOfPixelFormats, pixelFormats, &actualNumberOfFormats))
     {
@@ -204,7 +234,7 @@ getVideoSystemConfigurations
             status = Nucleus_Status_EnvironmentFailed;
             goto End;
         }
-        status = getConfiguration(configuration, pixelFormats[i]);
+        status = getConfiguration(window.hDC, configuration, pixelFormats[i]);
         if (Nucleus_Unlikely(status))
         {
             Nucleus_deallocateMemory(pixelFormats);
@@ -251,8 +281,8 @@ End:
         UnregisterClassA(CLASSNAME, hInstance);
         window.wndclass = 0;
     }
-    // Return success.
-    return Nucleus_Status_Success;
+    // Return the status.
+    return status;
 }
 
 #endif

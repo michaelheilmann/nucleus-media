@@ -7,4 +7,4 @@ cmake_minimum_required(VERSION 3.8)
 add_subdirectory(plugin)
 
 # Add the dependencies.
-add_subdirectory(dependencies/glew)
+#add_subdirectory(dependencies/glew)

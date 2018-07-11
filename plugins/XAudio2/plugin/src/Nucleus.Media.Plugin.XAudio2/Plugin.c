@@ -4,7 +4,7 @@
 #include "Nucleus.Media.Plugin.XAudio2/AudioSystemFactory.h"
 
 Nucleus_ClassTypeDefinition(Nucleus_Media_Plugin_XAudio2_Export,
-                            "Nucleus.Media.Plugin.XAudio2.Plugin",
+                            u8"Nucleus.Media.Plugin.XAudio2.Plugin",
                             Nucleus_Media_Plugin_XAudio2_Plugin,
                             Nucleus_Media_Plugin)
                     
@@ -36,20 +36,27 @@ startup
     if (Nucleus_Unlikely(!self)) return Nucleus_Status_InvalidArgument;
     Nucleus_Status status;
     //
-    Nucleus_MediaContext *context;
-    status = Nucleus_MediaContext_get(&context);
+    Nucleus_Media_Context *context;
+    status = Nucleus_Media_Context_create(&context);
     if (Nucleus_Unlikely(status)) return status;
     //
     Nucleus_Media_Plugin_XAudio2_AudioSystemFactory *factory;
     status = Nucleus_Media_Plugin_XAudio2_AudioSystemFactory_create(&factory);
-    if (Nucleus_Unlikely(status)) return status;
+    if (Nucleus_Unlikely(status))
+    {
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(context));
+        return status;
+    }
     //
-    status = Nucleus_MediaContext_registerAudioSystemFactory(context, NUCLEUS_MEDIA_AUDIOSYSTEMFACTORY(factory));
+    status = Nucleus_Media_Context_registerAudioSystemFactory(context, NUCLEUS_MEDIA_AUDIOSYSTEMFACTORY(factory));
     Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(factory));
     if (Nucleus_Unlikely(status))
     {
+        Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(context));
         return status;
     }
+    //
+    Nucleus_Object_decrementReferenceCount(NUCLEUS_OBJECT(context));
     //
     return Nucleus_Status_Success; 
 }

@@ -52,10 +52,17 @@ matrix:
                     - libopenal1
                     # Install pulseaudio as backend for OpenAL Soft.
                     - pulseaudio
+                    # for glxinfo
+                    - mesa-utils
+                    # Mesa offscreen rendering.
+                    - libosmesa6
+                    #
+                    - xvfb 
           env:
             - MATRIX_EVAL_BEFORE_INSTALL="CC=gcc-6"
-            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; export XVFBARGS=\"-screen 0 1280x1024x24\""
+            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; export XVFBARGS=\"-screen 0 1280x1024x24 -ac +extension GLX +render\""
             - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; export DISPLAY=:99.0"
+            - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; export LIBGL_ALWAYS_SOFTWARE=1"
             - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; sh -e /etc/init.d/xvfb start"
             - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; sleep 3"
             - MATRIX_EVAL_BEFORE_SCRIPT="export CC=gcc-6"    
@@ -92,6 +99,12 @@ matrix:
                     - libopenal1
                     # Install pulseaudio as backend for OpenAL Soft.
                     - pulseaudio
+                    # for glxinfo
+                    - mesa-utils
+                    # Mesa offscreen rendering.
+                    - libosmesa6
+                    #
+                    - xvfb 
           env:
             - MATRIX_EVAL_BEFORE_INSTALL="CC=clang-4.0"
             - MATRIX_EVAL_BEFORE_INSTALL="$MATRIX_EVAL_BEFORE_INSTALL ; export XVFBARGS=\"-screen 0 1280x1024x24\""
@@ -119,11 +132,13 @@ install:
   cd ..
   export PATH="${DEPS_DIR}/cmake-bin/bin:${PATH}"
 
-before_script:  
+before_script:
+- LIBGL_DEBUG=verbose; glxinfo
 # Invoke CMake on CMakeLists.txt.
 - eval "${MATRIX_EVAL_BEFORE_SCRIPT}"
 - cd "${TRAVIS_BUILD_DIR}"
 - cmake CMakeLists.txt
+
 
 script:
 # Enter the Travis build directory.
