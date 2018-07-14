@@ -41,6 +41,8 @@ matrix:
                     # https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
                     # for more information.
                     - ubuntu-toolchain-r-test
+                    - sourceline: "deb http://archive.ubuntu.com/ubuntu/ trusty multiverse"
+                    - sourceline: "deb http://archive.ubuntu.com/ubuntu/ trusty-backports universe"
                 packages:
                     # GCC 6.
                     - gcc-6
