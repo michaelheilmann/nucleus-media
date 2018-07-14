@@ -129,7 +129,17 @@ before_install:
 - sudo apt-get -qq purge postgresql* > /dev/null 
 - sudo apt-get -qq purge python* > /dev/null 
 - sudo apt-get -qq autoremove > /dev/null 
-- sudo apt-get -qq dist-upgrade > /dev/null 
+- sudo apt-get -qq dist-upgrade > /dev/null
+# Attempt to update Mesa.
+- wget "https://mesa.freedesktop.org/archive/mesa-18.0.1.tar.gz"; \
+- tar xfv mesa-18.0.1.tar.gz
+- rm mesa-18.0.1.tar.gz
+- cd mesa-18.0.1
+- ./configure --enable-glx=gallium-xlib --with-gallium-drivers=swrast,swr --disable-dri --disable-gbm --disable-egl --enable-gallium-osmesa --prefix=/usr/local
+- make
+- make install
+- cd ..
+- rm -rf mesa-18.0.1
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
 
 # Download and install CMake.
