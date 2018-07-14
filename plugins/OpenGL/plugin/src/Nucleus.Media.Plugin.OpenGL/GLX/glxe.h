@@ -6,8 +6,6 @@
     (Nucleus_OperatingSystem == Nucleus_OperatingSystem_CYGWIN)
 
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <GL/glx.h>
@@ -19,12 +17,25 @@
 /// @remark A server vendor name string returned by this functions must be deallocated using free when it is no longer required.
 char *glxe_get_glx_server_vendor_name(Display *display, int screenNumber);
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-
 /// @return a pointer to the client vendor name string on success, a null pointer on failure
 /// @remark A client vendor name string returned by this functions must be deallocated using free when it is no longer required.
 char *glxe_get_glx_client_vendor_name(Display *display);
+
+/// @return a pointer to a GLX server extensions string on success, a null pointer on failure
+/// @remark A GLX server extensions string returned by this functions must be deallocated using free when it is no longer required.
+char *glxe_get_glx_server_extensions(Display *display, int screenNumber);
+
+/// @return a pointer t a GLX client extensions string on success, a null pointer on failure
+/// @remark A GLX client extensions string returned by this functions must be deallocated using free when it is no longer required.
+char *glxe_get_glx_client_extensions(Display *display);
+
+/// @return a pointer t a GLX extensions string on success, a null pointer on failure
+/// @remark A GLX extensions string returned by this functions must be deallocated using free when it is no longer required.
+/// @remark glxe_get_glx_server_extensions() (the server side) and glx_get_glx_client_extensions() (the client side) are of
+/// limited value to programs, which want to use an extension. The effectively available extensions are determined by the
+/// connection (of the client and the server). glx_get_glx_extensions() retrieves the list of effectively available extensions
+/// of a connection.
+char *glxe_get_glx_extensions(Display *display, int screenNumber);
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 

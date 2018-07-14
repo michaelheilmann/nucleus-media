@@ -172,7 +172,7 @@ static Nucleus_Status _Window_initialize(_Window *window)
         return Nucleus_Status_EnvironmentFailed;        
     }
     {
-        //
+        // The server.
         char *serverVendorName = glxe_get_glx_server_vendor_name(window->display, DefaultScreen(window->display));
         if (serverVendorName)
         {
@@ -193,7 +193,17 @@ static Nucleus_Status _Window_initialize(_Window *window)
         {
             fprintf(stdout, "GLX server version: %s\n", "n/a");
         }
-        //
+        char *serverExtensions = glxe_get_glx_server_extensions(window->display, DefaultScreen(window->display));
+        if (serverExtensions)
+        {
+            fprintf(stdout, "GLX server extensions: %s\n", serverExtensions);
+            free(serverExtensions);
+        }
+        else
+        {
+            fprintf(stdout, "GLX server extensions: %s\n", "n/a");            
+        }
+        // The client.
         char *clientVendorName = glxe_get_glx_client_vendor_name(window->display);
         if (clientVendorName)
         {
@@ -213,6 +223,27 @@ static Nucleus_Status _Window_initialize(_Window *window)
         else
         {
             fprintf(stdout, "GLX client vendor name: %s\n", "n/a");    
+        }
+        char *clientExtensions = glxe_get_glx_client_extensions(window->display);
+        if (clientExtensions)
+        {
+            fprintf(stdout, "GLX client extensions: %s\n", clientExtensions);
+            free(clientExtensions);
+        }
+        else
+        {
+            fprintf(stdout, "GLX client extensions: %s\n", "n/a");            
+        }
+        // The connection.
+        char *extensions = glxe_get_glx_extensions(window->display, DefaultScreen(window->display));
+        if (extensions)
+        {
+            fprintf(stdout, "GLX extensions: %s\n", extensions);
+            free(extensions);            
+        }
+        else
+        {
+            fprintf(stdout, "GLX extensions: %s\n", "n/a");
         }
     }
     // Process any errors.

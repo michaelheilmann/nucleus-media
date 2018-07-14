@@ -114,6 +114,8 @@ matrix:
             - MATRIX_EVAL_BEFORE_SCRIPT="export CC=clang-4.0"
 
 before_install:
+- sudo add-apt-repository -y ppa:oibaf/graphics-drivers
+- sudo apt-get update -qq -y
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
 
 # Download and install CMake.

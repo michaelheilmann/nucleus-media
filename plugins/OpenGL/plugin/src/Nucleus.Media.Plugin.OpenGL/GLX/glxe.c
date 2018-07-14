@@ -3,6 +3,8 @@
 #if (Nucleus_OperatingSystem == Nucleus_OperatingSystem_LINUX) || \
     (Nucleus_OperatingSystem == Nucleus_OperatingSystem_CYGWIN)
 
+#include <stdio.h>
+#include <string.h>
 #include "Nucleus.Media.Plugin.OpenGL/GLX/GLX_ARB_create_context.h"
 
 #define ERROR(...) \
@@ -192,6 +194,39 @@ char *glxe_get_glx_client_vendor_name(Display *display)
         return NULL;
     }
     return strdup(name);     
+}
+
+char *glxe_get_glx_server_extensions(Display *display, int screenNumber)
+{
+    const char *extensions = glXQueryServerString(display, screenNumber, GLX_EXTENSIONS);
+    if (!extensions)
+    {
+        ERROR("%s failed\n", "glXQueryServerString");
+        return NULL;
+    }
+    return strdup(extensions);
+}
+
+char *glxe_get_glx_client_extensions(Display *display)
+{
+    const char *extensions = glXGetClientString(display, GLX_EXTENSIONS);
+    if (!extensions)
+    {
+        ERROR("%s failed\n", "glXGetClientString");
+        return NULL;
+    }
+    return strdup(extensions);
+}
+
+char *glxe_get_glx_extensions(Display *display, int screenNumber)
+{
+    const char *extensions = glXQueryExtensionsString(display, screenNumber);
+    if (!extensions)
+    {
+        ERROR("%s failed\n", "glXQueryExtensionsString");
+        return NULL;
+    }
+    return strdup(extensions);
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
