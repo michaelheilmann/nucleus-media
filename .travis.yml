@@ -117,6 +117,16 @@ matrix:
 
 before_install:
 - sudo apt-get update
+- sudo apt-get purge ruby*
+- sudo apt-get purge chromium*
+- sudo apt-get purge oracle*
+- sudo apt-get purge openjdk*
+- sudo apt-get purge openjdk*
+- sudo apt-get purge erlang*
+- sudo apt-get purge mongodb-org*
+- sudo apt-get purge postgresql*
+- sudo apt-get purge python*
+- sudo apt autoremove
 - sudo apt-get dist-upgrade
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
 
