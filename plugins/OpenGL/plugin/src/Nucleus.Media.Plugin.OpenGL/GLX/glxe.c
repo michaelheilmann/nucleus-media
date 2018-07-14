@@ -213,6 +213,16 @@ char *glxe_get_gl_vendor_name()
     return strdup(name);    
 }
 
+char *glxe_get_gl_renderer_name()
+{
+    const char *name = (const char *)glGetString(GL_RENDERER);
+    if (!name)
+    {
+        ERROR("%s failed\n", "glGetString");
+        return NULL;
+    }
+    return strdup(name);
+}
 
 char *glxe_get_glx_server_extensions(Display *display, int screenNumber)
 {

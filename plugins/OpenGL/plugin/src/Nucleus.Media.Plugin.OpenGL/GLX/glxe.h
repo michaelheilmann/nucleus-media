@@ -25,6 +25,10 @@ char *glxe_get_glx_client_vendor_name(Display *display);
 /// @remark A GL vendor name string returned by this functions must be deallocated using free when it is no longer required.
 char *glxe_get_gl_vendor_name();
 
+/// @return a pointer to the GL renderer name string on success, a null pointer on failure
+/// @remark A GL renderer name string returned by this functions must be deallocated using free when it is no longer required.
+char *glxe_get_gl_renderer_name();
+
 typedef struct glxe_glx_server_extensions
 {
     char **extensions;

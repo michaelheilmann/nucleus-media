@@ -245,6 +245,27 @@ static Nucleus_Status _Window_initialize(_Window *window)
         {
             fprintf(stdout, "GLX extensions: %s\n", "n/a");
         }
+        // GL.
+        char *glVendorName = glxe_get_gl_vendor_name();
+        if (glVendorName)
+        {
+            fprintf(stdout, "GL vendor: %s\n", glVendorName);
+            free(glVendorName);
+        }
+        else
+        {
+            fprintf(stdout, "GL vendor: %s\n", "n/a");           
+        }
+        char *glRendererName = glxe_get_gl_renderer_name();
+        if (glRendererName)
+        {
+            fprintf(stdout, "GL renderer: %s\n", glRendererName);
+            free(glRendererName);
+        }
+        else
+        {
+            fprintf(stdout, "GL renderer: %s\n", "n/a");           
+        }
     }
     // Process any errors.
     XSync(window->display, False);
