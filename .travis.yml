@@ -58,6 +58,8 @@ matrix:
                     - mesa-utils
                     # Mesa offscreen rendering.
                     - libosmesa6
+                    - libgl1-mesa-glx
+                    - libgl1-mesa-dri
                     #
                     - xvfb 
           env:
@@ -106,6 +108,7 @@ matrix:
                     # Mesa offscreen rendering.
                     - libosmesa6
                     - libgl1-mesa-glx
+                    - libgl1-mesa-dri
                     #
                     - xvfb 
           env:
@@ -131,7 +134,7 @@ before_install:
 - sudo apt-get -qq autoremove > /dev/null 
 - sudo apt-get -qq dist-upgrade > /dev/null
 # Attempt to update Mesa.
-- wget "https://mesa.freedesktop.org/archive/mesa-18.0.1.tar.gz"; \
+- wget "https://mesa.freedesktop.org/archive/mesa-18.0.1.tar.gz"
 - tar xfv mesa-18.0.1.tar.gz
 - rm mesa-18.0.1.tar.gz
 - cd mesa-18.0.1
