@@ -33,7 +33,6 @@ matrix:
           os: linux
           addons:
             apt:
-                update: true
                 sources:
                     # Add GCC-6 by alias
                     # See
@@ -117,7 +116,6 @@ matrix:
             - MATRIX_EVAL_BEFORE_SCRIPT="export CC=clang-4.0"
 
 before_install:
-- sudo sh -c "echo 'deb http://archive.ubuntu.com/ubuntu trusty-backports main restricted universe multiverse' > /etc/apt/sources.list.d/backports.list"
 - sudo apt-get update
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
 
