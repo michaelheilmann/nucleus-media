@@ -92,7 +92,7 @@ GLXContext glxe_create_context_with_configuration(Display *display, GLXFBConfig 
 		for (size_t i = 0, n = glxe_get_num_known_gl_versions(); i < n; ++i)
 		{
 			const glxe_gl_version *version = glxe_get_known_gl_version(i);
-			if (version->major >= 3)
+			//if (version->major >= 3)
 			{
 				int attributes[] =
 				{
@@ -110,6 +110,7 @@ GLXContext glxe_create_context_with_configuration(Display *display, GLXFBConfig 
                     INFO(u8"able to create an OpenGL %d.%d context\n", (int)version->major, (int)version->minor);
 					if (direct && !glXIsDirect(display, context))
 					{
+                        ERROR(u8"OpenGL %d.%d context is not direct\n", (int)version->major, (int)version->minor);
 						glXDestroyContext(display, context);
 						return 0;
 					}
