@@ -172,18 +172,48 @@ static Nucleus_Status _Window_initialize(_Window *window)
         return Nucleus_Status_EnvironmentFailed;        
     }
     {
+        //
         char *serverVendorName = glxe_get_glx_server_vendor_name(window->display, DefaultScreen(window->display));
-        if (serverVendorName) { fprintf(stdout, "GLX server vendor name: %s\n", serverVendorName);
-                                free(serverVendorName); }
+        if (serverVendorName)
+        {
+            fprintf(stdout, "GLX server vendor name: %s\n", serverVendorName);
+            free(serverVendorName);
+        }
+        else
+        {
+            fprintf(stdout, "GLX server vendor name: %s\n", "n/a");
+        }
         glxe_glx_server_version *serverVersion = glxe_get_glx_server_version(window->display, DefaultScreen(window->display));
-        if (serverVersion) { fprintf(stdout, "GLX server version: %d.%d\n", serverVersion->major, serverVersion->minor);
-                             glxe_free_glx_server_version(serverVersion); }
+        if (serverVersion)
+        {
+            fprintf(stdout, "GLX server version: %d.%d\n", serverVersion->major, serverVersion->minor);
+            glxe_free_glx_server_version(serverVersion);
+        }
+        else
+        {
+            fprintf(stdout, "GLX server version: %s\n", "n/a");
+        }
+        //
         char *clientVendorName = glxe_get_glx_client_vendor_name(window->display);
-        if (clientVendorName) { fprintf(stdout, "GLX client vendor name: %s\n", clientVendorName);
-                                free(clientVendorName); }
+        if (clientVendorName)
+        {
+            fprintf(stdout, "GLX client vendor name: %s\n", clientVendorName);
+            free(clientVendorName);
+        }
+        else
+        {
+            fprintf(stdout, "GLX client vendor name: %s\n", "n/a");           
+        }
         glxe_glx_client_version *clientVersion = glxe_get_glx_client_version(window->display);
-        if (clientVersion) { fprintf(stdout, "GLX client version: %d.%d\n", clientVersion->major, clientVersion->minor);
-                             glxe_free_glx_client_version(clientVersion); }
+        if (clientVersion)
+        {
+            fprintf(stdout, "GLX client version: %d.%d\n", clientVersion->major, clientVersion->minor);
+            glxe_free_glx_client_version(clientVersion);
+        }
+        else
+        {
+            fprintf(stdout, "GLX client vendor name: %s\n", "n/a");    
+        }
     }
     // Process any errors.
     XSync(window->display, False);

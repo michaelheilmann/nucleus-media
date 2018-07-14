@@ -194,7 +194,7 @@ char *glxe_get_glx_client_vendor_name(Display *display)
 
 glxe_glx_server_version *glxe_get_glx_server_version(Display *display, int screenNumber)
 {
-    const char *version_string = glXQueryServerString(display, screenNumber, GLX_VENDOR);
+    const char *version_string = glXQueryServerString(display, screenNumber, GLX_VERSION);
     if (!version_string)
     {
         ERROR("%s failed\n", "glXQueryServerString");
