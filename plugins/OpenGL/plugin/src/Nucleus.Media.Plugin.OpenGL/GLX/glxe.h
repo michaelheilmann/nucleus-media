@@ -13,21 +13,43 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 
-/// @return a pointer to the server vendor name string on success, a null pointer on failure
-/// @remark A server vendor name string returned by this functions must be deallocated using free when it is no longer required.
+/// @return a pointer to the GLX server vendor name string on success, a null pointer on failure
+/// @remark A GLX server vendor name string returned by this functions must be deallocated using free when it is no longer required.
 char *glxe_get_glx_server_vendor_name(Display *display, int screenNumber);
 
-/// @return a pointer to the client vendor name string on success, a null pointer on failure
-/// @remark A client vendor name string returned by this functions must be deallocated using free when it is no longer required.
+/// @return a pointer to the GLX client vendor name string on success, a null pointer on failure
+/// @remark A GLX client vendor name string returned by this functions must be deallocated using free when it is no longer required.
 char *glxe_get_glx_client_vendor_name(Display *display);
+
+/// @return a pointer to the GL vendor name string on success, a null pointer on failure
+/// @remark A GL vendor name string returned by this functions must be deallocated using free when it is no longer required.
+char *glxe_get_gl_vendor_name();
+
+typedef struct glxe_glx_server_extensions
+{
+    char **extensions;
+    size_t extensions_count;
+} glxe_glx_server_extensions;
 
 /// @return a pointer to a GLX server extensions string on success, a null pointer on failure
 /// @remark A GLX server extensions string returned by this functions must be deallocated using free when it is no longer required.
 char *glxe_get_glx_server_extensions(Display *display, int screenNumber);
 
+typedef struct glxe_glx_client_extensions
+{
+    char **extensions;
+    size_t extensions_count;
+} glxe_glx_client_extensions;
+
 /// @return a pointer t a GLX client extensions string on success, a null pointer on failure
 /// @remark A GLX client extensions string returned by this functions must be deallocated using free when it is no longer required.
 char *glxe_get_glx_client_extensions(Display *display);
+
+typedef struct glxe_glx_extensions
+{
+    char **extensions;
+    size_t extensions_count;
+} glxe_glx_extensions;
 
 /// @return a pointer t a GLX extensions string on success, a null pointer on failure
 /// @remark A GLX extensions string returned by this functions must be deallocated using free when it is no longer required.

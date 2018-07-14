@@ -7,11 +7,16 @@
 #include "Nucleus.Media.Plugin.OpenGL/isExtensionSupported.h"
 #include <stdio.h>
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <GL/glx.h>
+
+
 GLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = NULL;
 
 Nucleus_Status initialize_GLX_ARB_create_context(Display *dpy)
 {
-    const char *extensions = glXQueryExtensionsString(dpy, DefaultScreen(dpy));
+    const char *extensions = glXGetClientString(dpy, GLX_EXTENSIONS);//glXQueryExtensionsString(dpy, DefaultScreen(dpy));
 	if (NULL == extensions)
 	{
 		fprintf(stderr, "[GLX Extension Library, %s, %d] %s failed\n", __FILE__, __LINE__, "glXQueryExtensionsString");

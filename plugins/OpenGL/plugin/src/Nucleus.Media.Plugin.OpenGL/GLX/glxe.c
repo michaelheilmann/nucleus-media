@@ -10,6 +10,10 @@
 #define ERROR(...) \
     fprintf(stderr, "[%s, %s, %d] ", "GIL", __FILE__, __LINE__); \
     fprintf(stderr, __VA_ARGS__);
+
+#define INFO(...) \
+    fprintf(stdout, "[%s, %s, %d] ", "GIL", __FILE__, __LINE__); \
+    fprintf(stdout, __VA_ARGS__);
     
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -103,6 +107,7 @@ GLXContext glxe_create_context_with_configuration(Display *display, GLXFBConfig 
 				XSetErrorHandler(oldErrorHandler);
 				if (context)
 				{
+                    INFO(u8"able to create an OpenGL %d.%d context\n", (int)version->major, (int)version->minor);
 					if (direct && !glXIsDirect(display, context))
 					{
 						glXDestroyContext(display, context);
@@ -195,6 +200,18 @@ char *glxe_get_glx_client_vendor_name(Display *display)
     }
     return strdup(name);     
 }
+
+char *glxe_get_gl_vendor_name()
+{
+    const char *name = (const char *)glGetString(GL_VENDOR);
+    if (!name)
+    {
+        ERROR("%s failed\n", "glGetString");
+        return NULL;
+    }
+    return strdup(name);    
+}
+
 
 char *glxe_get_glx_server_extensions(Display *display, int screenNumber)
 {
