@@ -140,7 +140,7 @@ before_install:
 - cd libdrm-2.4.9
 - ./configure --prefix=/usr/local --enable-vc4 --enable-freedreno --enable-etnaviv-experimental-api
 - make
-- make install
+- sudo make install
 - cd ..
 - rm -rf libdrm-2.4.9
 # mesa
@@ -150,7 +150,7 @@ before_install:
 - cd mesa-18.0.1
 - ./configure --enable-glx=gallium-xlib --with-gallium-drivers=swrast,swr --disable-dri --disable-gbm --disable-egl --enable-gallium-osmesa --prefix=/usr/local
 - make
-- make install
+- sudo make install
 - cd ..
 - rm -rf mesa-18.0.1
 #
