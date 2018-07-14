@@ -105,6 +105,7 @@ matrix:
                     - mesa-utils
                     # Mesa offscreen rendering.
                     - libosmesa6
+                    - libgl1-mesa-glx
                     #
                     - xvfb 
           env:
@@ -117,17 +118,17 @@ matrix:
 
 before_install:
 - sudo apt-get update
-- sudo apt-get -qq purge ruby*
-- sudo apt-get -qq purge chromium*
-- sudo apt-get -qq purge oracle*
-- sudo apt-get -qq purge openjdk*
-- sudo apt-get -qq purge openjdk*
-- sudo apt-get -qq purge erlang*
-- sudo apt-get -qq purge mongodb-org*
-- sudo apt-get -qq purge postgresql*
-- sudo apt-get -qq purge python*
-- sudo apt-get -qq autoremove
-- sudo apt-get -qq dist-upgrade
+- sudo apt-get -qq purge ruby* > /dev/null 
+- sudo apt-get -qq purge chromium* > /dev/null 
+- sudo apt-get -qq purge oracle* > /dev/null 
+- sudo apt-get -qq purge openjdk* > /dev/null 
+- sudo apt-get -qq purge openjdk* > /dev/null 
+- sudo apt-get -qq purge erlang* > /dev/null 
+- sudo apt-get -qq purge mongodb-org* > /dev/null 
+- sudo apt-get -qq purge postgresql* > /dev/null 
+- sudo apt-get -qq purge python* > /dev/null 
+- sudo apt-get -qq autoremove > /dev/null 
+- sudo apt-get -qq dist-upgrade > /dev/null 
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
 
 # Download and install CMake.
