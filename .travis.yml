@@ -117,6 +117,7 @@ matrix:
 
 before_install:
 - sudo apt-get update
+- sudo apt-get dist-upgrade
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
 
 # Download and install CMake.
