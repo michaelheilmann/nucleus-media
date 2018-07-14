@@ -133,7 +133,17 @@ before_install:
 - sudo apt-get -qq purge python* > /dev/null 
 - sudo apt-get -qq autoremove > /dev/null 
 - sudo apt-get -qq dist-upgrade > /dev/null
-# Attempt to update Mesa.
+# libdrm
+- wget "https://dri.freedesktop.org/libdrm/libdrm-2.4.9.tar.gz"
+- tar xfv libdrm-2.4.9.tar.gz
+- rm libdrm-2.4.9.tar.gz
+- cd libdrm-2.4.9
+- ./configure --prefix=/usr/local --enable-vc4 --enable-freedreno --enable-etnaviv-experimental-api
+- make
+- make install
+- cd ..
+- rm -rf libdrm-2.4.9
+# mesa
 - wget "https://mesa.freedesktop.org/archive/mesa-18.0.1.tar.gz"
 - tar xfv mesa-18.0.1.tar.gz
 - rm mesa-18.0.1.tar.gz
@@ -143,6 +153,7 @@ before_install:
 - make install
 - cd ..
 - rm -rf mesa-18.0.1
+#
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
 
 # Download and install CMake.
