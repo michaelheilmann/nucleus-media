@@ -23,11 +23,11 @@ typedef struct glxe_gl_version
 
 /// @return a pointer to the server vendor name string on success, a null pointer on failure
 /// @remark A server vendor name string returned by this functions must be deallocated using free when it is no longer required.
-char *glxe_get_server_vendor_name(Display *display, int screenNumber);
+char *glxe_get_glx_server_vendor_name(Display *display, int screenNumber);
 
 /// @return a pointer to the client vendor name string on success, a null pointer on failure
 /// @remark A client vendor name string returned by this functions must be deallocated using free when it is no longer required.
-char *glxe_get_client_vendor_name(Display *display);
+char *glxe_get_glx_client_vendor_name(Display *display);
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -41,8 +41,11 @@ typedef struct glxe_glx_server_version
 }glxe_glx_server_version;
 
 /// @return a pointer to the server version on success, a null pointer on failure
-/// @remark A glxe_glx_server_version object returned by this functions must be deallocated using free when it is no longer required.
+/// @remark A glxe_glx_server_version object returned by this functions must be deallocated using glxe_free_glx_server_version() when it is no longer required.
 glxe_glx_server_version *glxe_get_glx_server_version(Display *display, int screenNumber);
+
+/// @param version a pointer to a glxe_glx_server_version object
+void glxe_free_glx_server_version(glxe_glx_server_version *version);
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -56,8 +59,11 @@ typedef struct glxe_glx_client_version
 } glxe_glx_client_version;
 
 /// @return a pointer to the client vendor name string on success, a null pointer on failure
-/// @remark A glxe_glx_client_version object returned by this functions must be deallocated using free when it is no longer required.
+/// @remark A glxe_glx_client_version object returned by this functions must be deallocated using glxe_free_glx_client_version() when it is no longer required.
 glxe_glx_client_version *glxe_get_glx_client_version(Display *display);
+
+/// @param version a pointer to a glxe_glx_client_version object
+void glxe_free_glx_client_version(glxe_glx_client_version *version);
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 

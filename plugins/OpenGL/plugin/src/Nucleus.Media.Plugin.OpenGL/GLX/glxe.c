@@ -6,7 +6,7 @@
 #include "Nucleus.Media.Plugin.OpenGL/GLX/GLX_ARB_create_context.h"
 
 #define ERROR(...) \
-    fprintf(stderr, "[%s, %s, %d]", "GIL", __FILE__, __LINE__); \
+    fprintf(stderr, "[%s, %s, %d] ", "GIL", __FILE__, __LINE__); \
     fprintf(stderr, __VA_ARGS__);
 
 /* List of known OpenGL versions. */
@@ -168,7 +168,7 @@ Window glxe_create_window(Display *display, XVisualInfo *visualInfo)
 	return window;
 }
 
-char *glxe_get_server_vendor_name(Display *display, int screenNumber)
+char *glxe_get_glx_server_vendor_name(Display *display, int screenNumber)
 {
     const char *name = glXQueryServerString(display, screenNumber, GLX_VENDOR);
     if (!name)
@@ -179,7 +179,7 @@ char *glxe_get_server_vendor_name(Display *display, int screenNumber)
     return strdup(name);
 }
 
-char *glxe_get_client_vendor_name(Display *display)
+char *glxe_get_glx_client_vendor_name(Display *display)
 {
     const char *name = glXGetClientString(display, GLX_VENDOR);
     if (!name)
@@ -189,6 +189,8 @@ char *glxe_get_client_vendor_name(Display *display)
     }
     return strdup(name);     
 }
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 glxe_glx_server_version *glxe_get_glx_server_version(Display *display, int screenNumber)
 {
@@ -215,6 +217,11 @@ glxe_glx_server_version *glxe_get_glx_server_version(Display *display, int scree
     return version;
 }
 
+void glxe_free_glx_server_version(glxe_glx_server_version *version)
+{ free(version); }
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 glxe_glx_client_version *glxe_get_glx_client_version(Display *display)
 {
     const char *version_string = glXGetClientString(display, GLX_VERSION);
@@ -239,5 +246,8 @@ glxe_glx_client_version *glxe_get_glx_client_version(Display *display)
     version->minor = version_minor;
     return version;
 }
+
+void glxe_free_glx_client_version(glxe_glx_client_version *version)
+{ free(version); }
 
 #endif

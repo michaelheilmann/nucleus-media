@@ -171,6 +171,20 @@ static Nucleus_Status _Window_initialize(_Window *window)
         window->display = NULL;
         return Nucleus_Status_EnvironmentFailed;        
     }
+    {
+        char *serverVendorName = glxe_get_glx_server_vendor_name(window->display, DefaultScreen(window->display));
+        if (serverVendorName) { fprintf(stdout, "GLX server vendor name: %s\n", serverVendorName);
+                                free(serverVendorName); }
+        glxe_glx_server_version *serverVersion = glxe_get_glx_server_version(window->display, DefaultScreen(window->display));
+        if (serverVersion) { fprintf(stdout, "GLX server version: %d.%d\n", serverVersion->major, serverVersion->minor);
+                             glxe_free_glx_server_version(serverVersion); }
+        char *clientVendorName = glxe_get_glx_client_vendor_name(window->display);
+        if (clientVendorName) { fprintf(stdout, "GLX client vendor name: %s\n", clientVendorName);
+                                free(clientVendorName); }
+        glxe_glx_client_version *clientVersion = glxe_get_glx_client_version(window->display);
+        if (clientVersion) { fprintf(stdout, "GLX client version: %d.%d\n", clientVersion->major, clientVersion->minor);
+                             glxe_free_glx_client_version(clientVersion); }
+    }
     // Process any errors.
     XSync(window->display, False);
     //
