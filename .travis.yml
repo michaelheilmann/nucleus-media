@@ -117,17 +117,17 @@ matrix:
 
 before_install:
 - sudo apt-get update
-- sudo apt-get -q purge ruby*
-- sudo apt-get -q purge chromium*
-- sudo apt-get -q purge oracle*
-- sudo apt-get -q purge openjdk*
-- sudo apt-get -q purge openjdk*
-- sudo apt-get -q purge erlang*
-- sudo apt-get -q purge mongodb-org*
-- sudo apt-get -q purge postgresql*
-- sudo apt-get -q purge python*
-- sudo apt autoremove
-- sudo apt-get dist-upgrade
+- sudo apt-get -qq purge ruby*
+- sudo apt-get -qq purge chromium*
+- sudo apt-get -qq purge oracle*
+- sudo apt-get -qq purge openjdk*
+- sudo apt-get -qq purge openjdk*
+- sudo apt-get -qq purge erlang*
+- sudo apt-get -qq purge mongodb-org*
+- sudo apt-get -qq purge postgresql*
+- sudo apt-get -qq purge python*
+- sudo apt-get -qq autoremove
+- sudo apt-get -qq dist-upgrade
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
 
 # Download and install CMake.
