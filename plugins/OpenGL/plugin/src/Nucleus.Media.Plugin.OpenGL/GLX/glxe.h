@@ -12,18 +12,15 @@
 #include <X11/Xutil.h>
 #include <GL/glx.h>
 
-/// @brief An OpenGL version.
-typedef struct glxe_gl_version
-{
-	/// @brief The OpenGL major version number.
-	int major;
-	/// @brief The OpenGL minor version number.
-	int minor;
-} glxe_gl_version;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 
 /// @return a pointer to the server vendor name string on success, a null pointer on failure
 /// @remark A server vendor name string returned by this functions must be deallocated using free when it is no longer required.
 char *glxe_get_glx_server_vendor_name(Display *display, int screenNumber);
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 
 /// @return a pointer to the client vendor name string on success, a null pointer on failure
 /// @remark A client vendor name string returned by this functions must be deallocated using free when it is no longer required.
@@ -83,14 +80,23 @@ glxe_glx_version *glxe_get_glx_version();
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+/// @brief An OpenGL version.
+typedef struct glxe_gl_version
+{
+	/// @brief The OpenGL major version number.
+	int major;
+	/// @brief The OpenGL minor version number.
+	int minor;
+} glxe_gl_version;
+
 /// @brief Get the number of known OpenGL versions.
 /// @return the number of known OpenGL versions
-size_t glxe_get_num_gl_versions();
+size_t glxe_get_num_known_gl_versions();
 
 /// @brief Get the OpenGL version at the specified index.
 /// @param index the index of the OpenGL version. Must be within the bounds of 0 (incl.) and glxe_get_num_gl_versions() (excl.).
 /// @return pointer to a static constant glxe_gl_version object on success, a null pointer on failure
-const glxe_gl_version *glxe_get_gl_version(size_t index);
+const glxe_gl_version *glxe_get_known_gl_version(size_t index);
 
 /// @brief Create an OpenGL context.
 /// @detail Try to create contexts for OpenGL versions from the highest version to the lowest version.

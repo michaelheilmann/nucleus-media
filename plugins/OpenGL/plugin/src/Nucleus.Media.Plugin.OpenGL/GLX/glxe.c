@@ -8,6 +8,8 @@
 #define ERROR(...) \
     fprintf(stderr, "[%s, %s, %d] ", "GIL", __FILE__, __LINE__); \
     fprintf(stderr, __VA_ARGS__);
+    
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /* List of known OpenGL versions. */
 static const glxe_gl_version _gl_versions[] =
@@ -63,11 +65,13 @@ glxe_glx_version *glxe_get_glx_version(Display *display)
     return version;
 }
 
-size_t glxe_get_num_gl_versions()
+size_t glxe_get_num_known_gl_versions()
 { return _num_gl_versions; }
 
-const glxe_gl_version *glxe_get_gl_version(size_t index)
+const glxe_gl_version *glxe_get_known_gl_version(size_t index)
 { return &(_gl_versions[index]); }
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 static int createContextErrorHandler(Display *display, XErrorEvent *event)
 { return 0; }
@@ -79,9 +83,9 @@ GLXContext glxe_create_context_with_configuration(Display *display, GLXFBConfig 
 	status = initialize_GLX_ARB_create_context(display);
 	if (!status)
 	{
-		for (size_t i = 0, n = glxe_get_num_gl_versions(); i < n; ++i)
+		for (size_t i = 0, n = glxe_get_num_known_gl_versions(); i < n; ++i)
 		{
-			const glxe_gl_version *version = glxe_get_gl_version(i);
+			const glxe_gl_version *version = glxe_get_known_gl_version(i);
 			if (version->major >= 3)
 			{
 				int attributes[] =
