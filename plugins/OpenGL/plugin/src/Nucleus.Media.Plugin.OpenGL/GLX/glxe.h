@@ -21,6 +21,46 @@ typedef struct glxe_gl_version
 	int minor;
 } glxe_gl_version;
 
+/// @return a pointer to the server vendor name string on success, a null pointer on failure
+/// @remark A server vendor name string returned by this functions must be deallocated using free when it is no longer required.
+char *glxe_get_server_vendor_name(Display *display, int screenNumber);
+
+/// @return a pointer to the client vendor name string on success, a null pointer on failure
+/// @remark A client vendor name string returned by this functions must be deallocated using free when it is no longer required.
+char *glxe_get_client_vendor_name(Display *display);
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/// @brief A GLX server version number.
+typedef struct glxe_glx_server_version
+{
+	/// @brief The GLX major server version number.
+	int major;
+	/// @brief The GLX minor server version number.
+	int minor;
+}glxe_glx_server_version;
+
+/// @return a pointer to the server version on success, a null pointer on failure
+/// @remark A glxe_glx_server_version object returned by this functions must be deallocated using free when it is no longer required.
+glxe_glx_server_version *glxe_get_glx_server_version(Display *display, int screenNumber);
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/// @brief A GLX client version number.
+typedef struct glxe_glx_client_version
+{
+	/// @brief The GLX major client version number.
+	int major;
+	/// @brief The GLX minor client version number.
+	int minor;
+} glxe_glx_client_version;
+
+/// @return a pointer to the client vendor name string on success, a null pointer on failure
+/// @remark A glxe_glx_client_version object returned by this functions must be deallocated using free when it is no longer required.
+glxe_glx_client_version *glxe_get_glx_client_version(Display *display);
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 /// @brief A GLX version.
 typedef struct glxe_glx_version
 {
@@ -30,13 +70,20 @@ typedef struct glxe_glx_version
 	int minor;
 } glxe_glx_version;
 
+/// @brief Get the GLX version.
+/// @return a pointer to a glxe_glx_version on success, a null pointer on failure
+/// @remark A glxe_glx_version object returned by this functions must be deallocated using free when it is no longer required.
+glxe_glx_version *glxe_get_glx_version();
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 /// @brief Get the number of known OpenGL versions.
 /// @return the number of known OpenGL versions
 size_t glxe_get_num_gl_versions();
 
 /// @brief Get the OpenGL version at the specified index.
 /// @param index the index of the OpenGL version. Must be within the bounds of 0 (incl.) and glxe_get_num_gl_versions() (excl.).
-/// @return pointer to a static constant glxe_gl_version object
+/// @return pointer to a static constant glxe_gl_version object on success, a null pointer on failure
 const glxe_gl_version *glxe_get_gl_version(size_t index);
 
 /// @brief Create an OpenGL context.

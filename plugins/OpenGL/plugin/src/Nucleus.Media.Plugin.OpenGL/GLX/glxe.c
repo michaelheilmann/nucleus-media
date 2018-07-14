@@ -5,6 +5,10 @@
 
 #include "Nucleus.Media.Plugin.OpenGL/GLX/GLX_ARB_create_context.h"
 
+#define ERROR(...) \
+    fprintf(stderr, "[%s, %s, %d]", "GIL", __FILE__, __LINE__); \
+    fprintf(stderr, __VA_ARGS__);
+
 /* List of known OpenGL versions. */
 static const glxe_gl_version _gl_versions[] =
 {
@@ -34,6 +38,30 @@ static const glxe_gl_version _gl_versions[] =
 
 /* Size of list of known OpenGL versions. */
 static const size_t _num_gl_versions = sizeof(_gl_versions) / sizeof(glxe_gl_version);
+
+glxe_glx_version *glxe_get_glx_version(Display *display)
+{
+    if (!display)
+    {
+        ERROR(u8"invalid argument %s", u8"NULL == display");
+        return NULL;
+    }
+    int majorVersion, minorVersion;
+    if (!glXQueryVersion(display, &majorVersion, &minorVersion))
+    {
+        ERROR(u8"%s failed\n", u8"glXQueryVersion");
+        return NULL;
+    }
+    glxe_glx_version *version = malloc(sizeof(glxe_glx_version));
+    if (!version)
+    {
+        ERROR(u8"%s failed", u8"malloc");
+        return NULL;
+    }
+    version->major = majorVersion;
+    version->minor = minorVersion;
+    return version;
+}
 
 size_t glxe_get_num_gl_versions()
 { return _num_gl_versions; }
@@ -76,13 +104,13 @@ GLXContext glxe_create_context_with_configuration(Display *display, GLXFBConfig 
 					}
 					return context;
 				}
-				fprintf(stderr, "[GLX Extension Library, %s, %d] unable to create an OpenGL %d.%d context\n", __FILE__, __LINE__, (int)version->major, (int)version->minor);
+                ERROR(u8"unable to create an OpenGL %d.%d context\n", (int)version->major, (int)version->minor);
 			}
 		}
 	}
 	else
 	{
-		fprintf(stderr, "[GLX Extension Library, %s, %d] extension %s not supported\n", __FILE__, __LINE__, "GLX_ARB_create_context_profile");
+		ERROR(u8"extension %s not supported\n", u8"GLX_ARB_create_context_profile");
 	}
 	
 	/* Create a context using glXCreateNewContext. */
@@ -133,11 +161,83 @@ Window glxe_create_window(Display *display, XVisualInfo *visualInfo)
 								  &setWindowAttributes);
     if (!window)
     {
-        fprintf(stderr, u8"[GLX extension library, %s, %d] %s failed\n", __FILE__, __LINE__, u8"XCreateWindow");
+        ERROR(u8"%s failed\n", u8"XCreateWindow");
     }
 
 	// Return the window.
 	return window;
+}
+
+char *glxe_get_server_vendor_name(Display *display, int screenNumber)
+{
+    const char *name = glXQueryServerString(display, screenNumber, GLX_VENDOR);
+    if (!name)
+    {
+        ERROR("%s failed\n", "glXQueryServerString");
+        return NULL;
+    }
+    return strdup(name);
+}
+
+char *glxe_get_client_vendor_name(Display *display)
+{
+    const char *name = glXGetClientString(display, GLX_VENDOR);
+    if (!name)
+    {
+        ERROR("%s failed\n", "glXGetClientString");
+        return NULL;
+    }
+    return strdup(name);     
+}
+
+glxe_glx_server_version *glxe_get_glx_server_version(Display *display, int screenNumber)
+{
+    const char *version_string = glXQueryServerString(display, screenNumber, GLX_VENDOR);
+    if (!version_string)
+    {
+        ERROR("%s failed\n", "glXQueryServerString");
+        return NULL;
+    }
+    int version_major, version_minor;
+    if (2 != sscanf(version_string, "%d.%d", &version_major, &version_minor))
+    {
+        ERROR("%s failed\n", "sscanf");
+        return NULL;
+    }
+    glxe_glx_server_version *version = malloc(sizeof(glxe_glx_server_version));
+    if (!version)
+    {
+        ERROR("%s failed\n", "malloc");
+        return NULL;
+    }
+    version->major = version_major;
+    version->minor = version_minor;
+    return version;
+}
+
+glxe_glx_client_version *glxe_get_glx_client_version(Display *display)
+{
+    const char *version_string = glXGetClientString(display, GLX_VERSION);
+    if (!version_string)
+    {
+        ERROR("%s failed\n", "glXGetClientString");
+        return NULL;
+    }
+    int version_major, version_minor;
+    if (2 != sscanf(version_string, "%d.%d", &version_major, &version_minor))
+    {
+        ERROR("%s failed\n", "sscanf");
+        return NULL;
+    }
+    glxe_glx_client_version *version = malloc(sizeof(glxe_glx_client_version));
+    if (!version)
+    {
+        ERROR("%s failed\n", "malloc");
+        return NULL;
+    }
+    version->major = version_major;
+    version->minor = version_minor;
+    return version;
 }
 
 #endif

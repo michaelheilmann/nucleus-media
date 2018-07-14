@@ -85,15 +85,21 @@ static Nucleus_Status _Window_initialize(_Window *window)
     }
     // As frame buffer configurations are not available before GLX version 1.3:
     // Assert GLX version is greater than or equal to 1.3.
-    if (!glXQueryVersion(window->display, &window->glx.version.major, &window->glx.version.minor) || 
-        ((window->glx.version.major == 1) && (window->glx.version.minor < 3)) || (window->glx.version.major < 1))
+    glxe_glx_version *glx_version = glxe_get_glx_version();
+    if (!glx_version)
+    {
+        return Nucleus_Status_EnvironmentFailed;
+    }
+    if (((glx_version->major == 1) && (glx_version->minor < 3)) || (glx_version->major < 1))
     {
         fprintf(stderr, u8"GLX version 1.3 or higher required. GLX version %d.%d given\n", 
-                        window->glx.version.major, window->glx.version.minor);
+                        glx_version->major, glx_version->minor);
+        free(glx_version);
         XCloseDisplay(window->display);
         window->display = NULL;
         return Nucleus_Status_EnvironmentFailed;
     }
+    free(glx_version);
 	ChooseFbConfig(window->display, &window->frameBufferConfigurations, &window->numberOfFrameBufferConfigurations);
     if (!window->frameBufferConfigurations)
     {
@@ -113,8 +119,7 @@ static Nucleus_Status _Window_initialize(_Window *window)
     }
     // Create visual.
     window->frameBufferConfiguration = window->frameBufferConfigurations[0];
-    window->visualInfo = glXGetVisualFromFBConfig(window->display,
-                                                  window->frameBufferConfiguration);
+    window->visualInfo = glXGetVisualFromFBConfig(window->display, window->frameBufferConfiguration);
     if (!window->visualInfo)
     {
         fprintf(stderr, u8"%s failed\n", u8"glXGetVisualFromFBConfig");
