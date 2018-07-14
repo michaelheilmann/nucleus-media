@@ -266,6 +266,27 @@ static Nucleus_Status _Window_initialize(_Window *window)
         {
             fprintf(stdout, "GL renderer: %s\n", "n/a");           
         }
+        glxe_gl_version *glVersion = glxe_get_gl_version();
+        if (glVersion)
+        {
+            fprintf(stdout, "GL version: %d.%d\n", glVersion->major, glVersion->minor);
+            glxe_free_gl_version(glVersion);
+        }
+        else
+        {
+            fprintf(stdout, "GL version: %s\n", "n/a");
+
+        }
+        char *glExtensions = glxe_get_gl_extensions();
+        if (glExtensions)
+        {
+            fprintf(stdout, "GL extensions: %s\n", glExtensions);
+            free(glExtensions);
+        }
+        else
+        {
+            fprintf(stdout, "GL extensions: %s\n", "n/a");           
+        }
     }
     // Process any errors.
     XSync(window->display, False);

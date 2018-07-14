@@ -10,8 +10,19 @@
 #include <X11/Xutil.h>
 #include <GL/glx.h>
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/// @return a pointer to the GL vendor name string on success, a null pointer on failure
+/// @remark A GL vendor name string returned by this functions must be deallocated using free when it is no longer required.
+char *glxe_get_gl_vendor_name();
 
+/// @return a pointer to the GL renderer name string on success, a null pointer on failure
+/// @remark A GL renderer name string returned by this functions must be deallocated using free when it is no longer required.
+char *glxe_get_gl_renderer_name();
+
+/// @return a pointer to the GL extensions string on success, a null pointer on failure
+/// @remark A GL extensions string returned by this functions must be deallocated using free when it is no longer required.
+char *glxe_get_gl_extensions();
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /// @return a pointer to the GLX server vendor name string on success, a null pointer on failure
 /// @remark A GLX server vendor name string returned by this functions must be deallocated using free when it is no longer required.
@@ -20,14 +31,6 @@ char *glxe_get_glx_server_vendor_name(Display *display, int screenNumber);
 /// @return a pointer to the GLX client vendor name string on success, a null pointer on failure
 /// @remark A GLX client vendor name string returned by this functions must be deallocated using free when it is no longer required.
 char *glxe_get_glx_client_vendor_name(Display *display);
-
-/// @return a pointer to the GL vendor name string on success, a null pointer on failure
-/// @remark A GL vendor name string returned by this functions must be deallocated using free when it is no longer required.
-char *glxe_get_gl_vendor_name();
-
-/// @return a pointer to the GL renderer name string on success, a null pointer on failure
-/// @remark A GL renderer name string returned by this functions must be deallocated using free when it is no longer required.
-char *glxe_get_gl_renderer_name();
 
 typedef struct glxe_glx_server_extensions
 {
@@ -62,6 +65,24 @@ typedef struct glxe_glx_extensions
 /// connection (of the client and the server). glx_get_glx_extensions() retrieves the list of effectively available extensions
 /// of a connection.
 char *glxe_get_glx_extensions(Display *display, int screenNumber);
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/// @brief An OpenGL version.
+typedef struct glxe_gl_version
+{
+	/// @brief The OpenGL major version number.
+	int major;
+	/// @brief The OpenGL minor version number.
+	int minor;
+} glxe_gl_version;
+
+/// @return a pointer to the GL version on success, a null pointer on failure
+/// @remark A glxe_gl_version object returned by this functions must be deallocated using glxe_free_gl_version() when it is no longer required.
+glxe_gl_version *glxe_get_gl_version();
+
+/// @param version a pointer to a glxe_gl_version object
+void glxe_free_gl_version(glxe_gl_version *version);
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -116,15 +137,6 @@ typedef struct glxe_glx_version
 glxe_glx_version *glxe_get_glx_version();
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-/// @brief An OpenGL version.
-typedef struct glxe_gl_version
-{
-	/// @brief The OpenGL major version number.
-	int major;
-	/// @brief The OpenGL minor version number.
-	int minor;
-} glxe_gl_version;
 
 /// @brief Get the number of known OpenGL versions.
 /// @return the number of known OpenGL versions

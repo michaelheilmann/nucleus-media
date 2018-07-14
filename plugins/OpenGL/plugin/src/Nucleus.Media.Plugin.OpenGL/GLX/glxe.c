@@ -224,6 +224,17 @@ char *glxe_get_gl_renderer_name()
     return strdup(name);
 }
 
+char *glxe_get_gl_extensions()
+{
+    const char *name = (const char *)glGetString(GL_EXTENSIONS);
+    if (!name)
+    {
+        ERROR("%s failed\n", "glGetString");
+        return NULL;
+    }
+    return strdup(name);
+}
+
 char *glxe_get_glx_server_extensions(Display *display, int screenNumber)
 {
     const char *extensions = glXQueryServerString(display, screenNumber, GLX_EXTENSIONS);
@@ -316,5 +327,37 @@ glxe_glx_client_version *glxe_get_glx_client_version(Display *display)
 
 void glxe_free_glx_client_version(glxe_glx_client_version *version)
 { free(version); }
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+glxe_gl_version *glxe_get_gl_version()
+{
+    const char *version_string = glGetString(GL_VERSION);
+    if (!version_string)
+    {
+        ERROR("%s failed\n", "glGetString");
+        return NULL;
+    }
+    int version_major, version_minor;
+    if (2 != sscanf(version_string, "%d.%d", &version_major, &version_minor))
+    {
+        ERROR("%s failed\n", "sscanf");
+        return NULL;
+    }
+    glxe_gl_version *version = malloc(sizeof(glxe_gl_version));
+    if (!version)
+    {
+        ERROR("%s failed\n", "malloc");
+        return NULL;
+    }
+    version->major = version_major;
+    version->minor = version_minor;
+    return version;    
+}
+
+void glxe_free_gl_version(glxe_gl_version *version)
+{
+    free(version);
+}
 
 #endif
