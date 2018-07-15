@@ -120,53 +120,6 @@ matrix:
             - MATRIX_EVAL_BEFORE_SCRIPT="export CC=clang-4.0"
 
 before_install:
-#- sudo add-apt-repository -y ppa:ubuntu-x-swat/updates
-#- sudo apt-get update
-#- sudo apt-get -qq purge ruby* > /dev/null 
-# sudo apt-get -qq purge chromium* > /dev/null 
-#- sudo apt-get -qq purge oracle* > /dev/null 
-#- sudo apt-get -qq purge openjdk* > /dev/null 
-#- sudo apt-get -qq purge openjdk* > /dev/null 
-#- sudo apt-get -qq purge erlang* > /dev/null 
-#- sudo apt-get -qq purge mongodb-org* > /dev/null 
-#- sudo apt-get -qq purge postgresql* > /dev/null 
-#- sudo apt-get -qq purge python* > /dev/null 
-#- sudo apt-get -qq autoremove > /dev/null 
-#- sudo apt-get -qq dist-upgrade > /dev/null
-#
-- export LIBPCIACCESS_VERSION=libpciaccess-0.14
-- export LIBDRM_VERSION=libdrm-2.4.92
-- export MESA_VERSION=mesa-18.1.4
-# libpciaccess (required by libdrm)
-- wget https://www.x.org/releases/individual/lib/$LIBPCIACCESS_VERSION.tar.gz
-- tar xfv $LIBPCIACCESS_VERSION.tar.bz2
-- cd $LIBPCIACCESS_VERSION
-- ./configure --prefix=$HOME/prefix
-- make
-- make install
-- cd ..
-- rm -rf ${LIBPCIACCESS_VERSION}
-# libdrm (required by mesa)
-- wget "https://dri.freedesktop.org/libdrm/${LIBDRM_VERSION}.tar.gz"
-- tar xfv ${LIBDRM_VERSION}.tar.gz
-- rm ${LIBDRM_VERSION}.tar.gz
-- cd ${LIBDRM_VERSION}
-- ./configure --prefix=${HOME}/prefix --enable-vc4 --enable-freedreno --enable-etnaviv-experimental-api
-- make
-- sudo make install
-- cd ..
-- rm -rf ${LIBDRM_VERSION}
-# mesa
-- wget "https://mesa.freedesktop.org/archive/${MESA_VERSION}.tar.gz"
-- tar xfv ${MESA_VERSION}.tar.gz
-- rm ${MESA_VERSION}.tar.gz
-- cd ${MESA_VERSION}
-- ./configure --enable-glx=gallium-xlib --with-gallium-drivers=swrast,swr --disable-dri --disable-gbm --disable-egl --enable-gallium-osmesa --prefix=${HOME}/prefix
-- make
-- sudo make install
-- cd ..
-- rm -rf ${MESA_VERSION}
-#
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
 
 # Download and install CMake.
@@ -196,8 +149,10 @@ before_script:
 script:
 # Enter the Travis build directory.
 - cd "${TRAVIS_BUILD_DIR}"
-# Run "make all" and "make test".
+# Run "make all".
 - make all
+# As f****** Travis CI only supports OpenGL 2.1, we need to exclude certain tests.
+# --exclude-regex <regex> allows us to do so.
 - ctest --output-on-failure --extra-verbose
 
 notifications:
