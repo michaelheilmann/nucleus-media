@@ -130,32 +130,32 @@ before_install:
 - sudo apt-get -qq purge erlang* > /dev/null 
 - sudo apt-get -qq purge mongodb-org* > /dev/null 
 - sudo apt-get -qq purge postgresql* > /dev/null 
-#- sudo apt-get -qq purge python* > /dev/null 
+- sudo apt-get -qq purge python* > /dev/null 
 - sudo apt-get -qq autoremove > /dev/null 
 - sudo apt-get -qq dist-upgrade > /dev/null
+#
+- export LIBDRM_VERSION=2.4.92
+- export MESA_VERSION=18.1.4
 # libdrm (required by mesa)
-- wget "https://dri.freedesktop.org/libdrm/libdrm-2.4.9.tar.gz"
-- tar xfv libdrm-2.4.9.tar.gz
-- rm libdrm-2.4.9.tar.gz
-- cd libdrm-2.4.9
-- ./configure --prefix=/usr/local --enable-vc4 --enable-freedreno --enable-etnaviv-experimental-api
+- wget "https://dri.freedesktop.org/libdrm/libdrm-${LIBDRM_VERSION}.tar.gz"
+- tar xfv libdrm-${LIBDRM_VERSION}.tar.gz
+- rm libdrm-${LIBDRM_VERSION}.tar.gz
+- cd libdrm-${LIBDRM_VERSION}
+- ./configure --prefix=${HOME}/prefix --enable-vc4 --enable-freedreno --enable-etnaviv-experimental-api
 - make
 - sudo make install
 - cd ..
-- rm -rf libdrm-2.4.9
-- export LIBDRMROOT=/usr/local
+- rm -rf libdrm-${LIBDRM_VERSION}
 # mesa
-- export LIBDRM_CFLAGS="-I${LIBDRM_ROOT}/include -I${LIBDRMROOT}/include/drm"
-- export LIBDRM_LIBS="-L${LIBDRM_ROOT}/lib -ldrm"
-- wget "https://mesa.freedesktop.org/archive/mesa-18.0.1.tar.gz"
-- tar xfv mesa-18.0.1.tar.gz
-- rm mesa-18.0.1.tar.gz
-- cd mesa-18.0.1
-- ./configure --enable-glx=gallium-xlib --with-gallium-drivers=swrast,swr --disable-dri --disable-gbm --disable-egl --enable-gallium-osmesa --prefix=/usr/local
+- wget "https://mesa.freedesktop.org/archive/mesa-${MESA_VERSION}.tar.gz"
+- tar xfv mesa-${MESA_VERSION}.tar.gz
+- rm mesa-${MESA_VERSION}.tar.gz
+- cd mesa-${MESA_VERSION}
+- ./configure --enable-glx=gallium-xlib --with-gallium-drivers=swrast,swr --disable-dri --disable-gbm --disable-egl --enable-gallium-osmesa --prefix=${HOME}/prefix
 - make
 - sudo make install
 - cd ..
-- rm -rf mesa-18.0.1
+- rm -rf mesa-${MESA_VERSION}
 #
 - eval "${MATRIX_EVAL_BEFORE_INSTALL}"
 
