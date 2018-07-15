@@ -143,7 +143,7 @@ before_install:
 - sudo make install
 - cd ..
 - rm -rf libdrm-2.4.9
-- echo ${LIBDRM_ROOT}
+- export LIBDRMROOT=/usr/local
 # mesa
 - export LIBDRM_CFLAGS="-I${LIBDRM_ROOT} -I${LIBDRM_ROOT}/libdrm"
 - export LIBDRM_LIBS="-L${LIBDRM_ROOT}/lib -ldrm"
