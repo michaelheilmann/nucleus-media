@@ -145,7 +145,7 @@ before_install:
 - rm -rf libdrm-2.4.9
 - export LIBDRMROOT=/usr/local
 # mesa
-- export LIBDRM_CFLAGS="-I${LIBDRM_ROOT} -I${LIBDRM_ROOT}/drm -I${LIBDRMROOT}/include/drm"
+- export LIBDRM_CFLAGS="-I${LIBDRM_ROOT}/include -I${LIBDRMROOT}/include/drm"
 - export LIBDRM_LIBS="-L${LIBDRM_ROOT}/lib -ldrm"
 - wget "https://mesa.freedesktop.org/archive/mesa-18.0.1.tar.gz"
 - tar xfv mesa-18.0.1.tar.gz
